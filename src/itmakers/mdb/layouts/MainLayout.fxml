@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="MainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="itmakers.mdb.MainController">
+   <top>
+      <AnchorPane fx:id="topBar" prefHeight="30.0" style="-fx-background-color: #2196F3;" BorderPane.alignment="CENTER">
+            <JFXButton fx:id="showMenu" ripplerFill="white" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+               <padding>
+                  <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0" />
+               </padding>
+               <graphic>
+                  <MaterialDesignIconView fill="#424242" glyphName="MENU" size="20" />
+               </graphic>
+            </JFXButton>
+            <Label layoutX="30.0" text="ITMakers Movie Database" AnchorPane.leftAnchor="30.0">
+               <font>
+                  <Font name="Roboto Light" size="20.0" />
+               </font>
+            </Label>
+            <JFXButton fx:id="closeButton" layoutX="573.0" layoutY="14.0" ripplerFill="white" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+               <padding>
+                  <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0" />
+               </padding>
+               <graphic>
+                  <MaterialDesignIconView fill="#424242" glyphName="WINDOW_CLOSE" size="20" />
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="maximizeButton" layoutX="587.0" layoutY="15.0" ripplerFill="white" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="5.0">
+               <padding>
+                  <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0" />
+               </padding>
+               <graphic>
+                  <MaterialDesignIconView fx:id="sizeControlIcon" fill="#424242" glyphName="WINDOW_MAXIMIZE" size="20" />
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="iconifyButton" layoutX="567.0" layoutY="15.0" ripplerFill="white" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="45.0" AnchorPane.topAnchor="5.0">
+               <padding>
+                  <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0" />
+               </padding>
+               <graphic>
+                  <MaterialDesignIconView fill="#424242" glyphName="WINDOW_MINIMIZE" size="20" strokeMiterLimit="5.0" strokeWidth="0.5" />
+               </graphic>
+            </JFXButton>
+         </AnchorPane>
+   </top>
+   <center>
+      <JFXTabPane fx:id="primaryTabPane" rotateGraphic="true" side="LEFT" stylesheets="@../style.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+         <tabs>
+            <Tab fx:id="baseTab" text="Base">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <JFXTabPane fx:id="secondaryTabPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <tabs>
+                              <Tab fx:id="moviesTab" text="Movies">
+                                <content>
+                                  <AnchorPane>
+                                       <children>
+                                          <ScrollPane fx:id="moviesScrollPane" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #424242;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <content>
+                                                <TilePane fx:id="moviesTile" alignment="CENTER" hgap="20.0" prefColumns="3" prefRows="1" prefTileHeight="300.0" prefTileWidth="300.0" vgap="20.0" />
+                                             </content></ScrollPane>
+                                       </children></AnchorPane>
+                                </content>
+                              </Tab>
+                              <Tab fx:id="tvSeriesTab" text="TVSeries">
+                                <content>
+                                  <AnchorPane fx:id="tvSeriesScrollPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                </content>
+                              </Tab>
+                           </tabs>
+                        </JFXTabPane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="detailsTab" text="Details">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <AnchorPane fx:id="imagePane" layoutY="6.0" prefHeight="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="playerTab" text="Player">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+         </tabs>
+      </JFXTabPane>
+   </center>
+</BorderPane>

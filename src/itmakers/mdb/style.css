@@ -1,0 +1,28 @@
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+
+.scroll-pane {
+   -fx-background-color: transparent;
+}
+
+.scroll-pane {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane:focused {
+    -fx-background-insets: 0;
+}
+
+.scroll-pane .corner {
+    -fx-background-insets: 0;
+}
+
+.jfx-tab-pane {
+    -fx-tab-max-height: 0 ;
+}
+.jfx-tab-pane .jfx-tab-header-area {
+    visibility: hidden ;
+}
+
