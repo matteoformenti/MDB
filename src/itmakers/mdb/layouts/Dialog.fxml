@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.CheckComboBox?>
+
+<Pane prefHeight="450.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="itmakers.mdb.elements.FilmEditorController">
+   <children>
+      <AnchorPane prefHeight="450.0" prefWidth="700.0">
+         <children>
+            <VBox layoutX="7.0" layoutY="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <children>
+                  <HBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <StackPane fx:id="posterPane" maxHeight="380.0" minHeight="380.0" prefHeight="380.0" prefWidth="261.0" HBox.hgrow="NEVER">
+                           <children>
+                              <VBox fx:id="posterOptions" alignment="CENTER" prefHeight="380.0" prefWidth="261.0" spacing="10.0" style="-fx-background-color: #414141;" StackPane.alignment="CENTER">
+                                 <children>
+                                    <JFXButton onAction="#removePoster" ripplerFill="#2196f3" text="Remove Poster" textFill="WHITE" />
+                                    <JFXButton onAction="#choosePoster" ripplerFill="#2196f3" text="Choose Poster" textFill="WHITE" />
+                                    <JFXButton onAction="#downloadPoster" ripplerFill="#2196f3" text="Download Poster" textFill="WHITE" />
+                                 </children>
+                              </VBox>
+                              <ImageView fx:id="posterImageView" fitHeight="380.0" fitWidth="261.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                              </image>
+                              </ImageView>
+                           </children>
+                           <effect>
+                              <DropShadow height="20.0" radius="7.0" width="10.0" />
+                           </effect>
+                        </StackPane>
+                        <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <JFXTextField fx:id="titleLabel" focusColor="#2196f3" promptText="Title" unFocusColor="#2298f280" VBox.vgrow="ALWAYS" />
+                              <HBox>
+                                 <children>
+                                    <JFXTextField fx:id="fileLocationLabel" focusColor="#2196f3" promptText="File location" unFocusColor="#2298f280" HBox.hgrow="ALWAYS" />
+                                    <JFXButton onAction="#chooseMovieFile" prefWidth="125.0" ripplerFill="#2298f2" text="Select File" textFill="#212121">
+                                       <graphic>
+                                          <MaterialDesignIconView fill="#212121" glyphName="MOVIE" size="15.0" />
+                                       </graphic>
+                                       <HBox.margin>
+                                          <Insets bottom="-1.0" left="-1.0" right="8.0" top="-1.0" />
+                                       </HBox.margin>
+                                    </JFXButton>
+                                 </children>
+                              </HBox>
+                              <HBox layoutX="10.0" layoutY="42.0">
+                                 <children>
+                                    <JFXTextField fx:id="trailerField" focusColor="#2196f3" promptText="Trailer location" unFocusColor="#2298f280" HBox.hgrow="ALWAYS" />
+                                    <JFXButton onAction="#chooseTrailerFile" prefWidth="125.0" ripplerFill="#2298f2" text="Select Trailer" textFill="#212121">
+                                       <graphic>
+                                          <MaterialDesignIconView fill="#212121" glyphName="MOVIE" size="15.0" />
+                                       </graphic>
+                                       <HBox.margin>
+                                          <Insets bottom="-1.0" left="-1.0" right="8.0" top="-1.0" />
+                                       </HBox.margin>
+                                    </JFXButton>
+                                 </children>
+                              </HBox>
+                              <HBox>
+                                 <children>
+                                    <JFXTextField fx:id="yearLabel" focusColor="#2196f3" promptText="Year" unFocusColor="#2298f280" HBox.hgrow="ALWAYS" />
+                                    <JFXTextField fx:id="RuntimeLabel" focusColor="#2196f3" layoutX="10.0" layoutY="10.0" promptText="Runtime" unFocusColor="#2298f280" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <HBox>
+                                 <children>
+                                    <CheckComboBox fx:id="genreCheckBox" HBox.hgrow="ALWAYS" />
+                                    <JFXSlider fx:id="ratingSlider" blockIncrement="1.0" indicatorPosition="RIGHT" majorTickUnit="1.0" max="5.0" minorTickCount="0" snapToTicks="true" value="1.0" HBox.hgrow="SOMETIMES">
+                                       <HBox.margin>
+                                          <Insets top="6.0" />
+                                       </HBox.margin>
+                                    </JFXSlider>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="8.0" right="8.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox layoutX="18.0" layoutY="138.0">
+                                 <VBox.margin>
+                                    <Insets right="8.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <JFXTextField fx:id="writerLabel" focusColor="#2196f3" promptText="Writer" unFocusColor="#2298f280" HBox.hgrow="ALWAYS" />
+                                    <JFXButton onAction="#chooseActors" ripplerFill="#2196f3" text="Actors" textAlignment="CENTER">
+                                       <graphic>
+                                          <MaterialDesignIconView glyphName="PLUS" />
+                                       </graphic>
+                                    </JFXButton>
+                                 </children>
+                              </HBox>
+                              <JFXTextArea fx:id="plotArea" focusColor="#2196f3" promptText="Plot" unFocusColor="#2298f280" VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets bottom="15.0" left="7.0" right="8.0" />
+                                 </VBox.margin>
+                              </JFXTextArea>
+                           </children>
+                           <HBox.margin>
+                              <Insets top="10.0" />
+                           </HBox.margin>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT">
+                     <children>
+                        <AnchorPane HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label fx:id="filmCounter" text="Film number:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <JFXButton fx:id="closeButton" layoutX="350.0" layoutY="10.0" onAction="#closeDialog" ripplerFill="#2196f3" text="Close" textAlignment="CENTER">
+                           <graphic>
+                              <MaterialDesignIconView glyphName="CLOSE" />
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="deleteButton" layoutX="10.0" layoutY="10.0" onAction="#deleteMovie" ripplerFill="#2196f3" text="Delete" textAlignment="CENTER">
+                           <graphic>
+                              <MaterialDesignIconView glyphName="DELETE" />
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="saveAndCloseButton" onAction="#saveAndClose" ripplerFill="#2196f3" text="Save and close" textAlignment="CENTER">
+                           <graphic>
+                              <MaterialDesignIconView glyphName="SYNC" />
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="saveAndNextButton" layoutX="560.0" layoutY="10.0" onAction="#saveAndNext" ripplerFill="#2196f3" text="Save and Next" textAlignment="CENTER">
+                           <graphic>
+                              <MaterialDesignIconView glyphName="SYNC" />
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </children>
+   <padding>
+      <Insets bottom="-1.0" left="-1.0" right="-1.0" top="-1.0" />
+   </padding>
+</Pane>

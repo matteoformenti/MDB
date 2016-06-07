@@ -9,16 +9,14 @@ public class Movie implements Serializable
 {
     private String title;
     private String year;
-    private List<Genres> genres;
     private String runtime;
+    private List<Genres> genres;
     private String director;
-    private String writer;
+    private List<String> actors;
     private String plot;
-    private String country;
-    private String awards;
     private String imdbID;
     private String poster;
-    private String imdbRating;
+    private int movieID;
 
     private String localURL;
     private int localRating;
@@ -74,16 +72,6 @@ public class Movie implements Serializable
         this.director = director;
     }
 
-    public String getWriter()
-    {
-        return writer;
-    }
-
-    public void setWriter(String writer)
-    {
-        this.writer = writer;
-    }
-
     public String getPlot()
     {
         return plot;
@@ -92,26 +80,6 @@ public class Movie implements Serializable
     public void setPlot(String plot)
     {
         this.plot = plot;
-    }
-
-    public String getCountry()
-    {
-        return country;
-    }
-
-    public void setCountry(String country)
-    {
-        this.country = country;
-    }
-
-    public String getAwards()
-    {
-        return awards;
-    }
-
-    public void setAwards(String awards)
-    {
-        this.awards = awards;
     }
 
     public String getImdbID()
@@ -132,16 +100,6 @@ public class Movie implements Serializable
     public void setPoster(String poster)
     {
         this.poster = poster;
-    }
-
-    public String getImdbRating()
-    {
-        return imdbRating;
-    }
-
-    public void setImdbRating(String imdbRating)
-    {
-        this.imdbRating = imdbRating;
     }
 
     public String getLocalURL()
@@ -172,5 +130,15 @@ public class Movie implements Serializable
     public void setPosterImage(Image posterImage)
     {
         this.posterImage = posterImage;
+    }
+
+    public List<String> getActors()
+    {
+        return actors;
+    }
+
+    public void setActors(List<String> actors)
+    {
+        this.actors = actors;
     }
 }

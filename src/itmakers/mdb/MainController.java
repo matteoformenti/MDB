@@ -1,15 +1,16 @@
 package itmakers.mdb;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTabPane;
-import com.sun.media.jfxmedia.logging.Logger;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
+import itmakers.mdb.elements.FilmEditor;
 import itmakers.mdb.elements.VideoGraphics;
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -19,36 +20,19 @@ import javafx.stage.Screen;
 
 public class MainController
 {
-
-    public AnchorPane topBar;
-    public JFXButton showMenu;
-    public JFXTabPane primaryTabPane;
-    public Tab baseTab;
-    public JFXTabPane secondaryTabPane;
-    public Tab moviesTab;
-    public Tab tvSeriesTab;
-    public Tab detailsTab;
-    public AnchorPane imagePane;
-    public Tab playerTab;
-    public JFXButton closeButton;
-    public JFXButton maximizeButton;
-    public JFXButton iconifyButton;
-    public ScrollPane moviesScrollPane;
     public MaterialDesignIconView sizeControlIcon;
+    public AnchorPane topBar;
+    public JFXDialog settingsDialog = new JFXDialog();
     public TilePane moviesTile;
-
+    
     public boolean maximized = false;
-    public BorderPane MainPane;
+    public StackPane mainPane;
+    public JFXTabPane tabPane;
+    public JFXDialogLayout dialogLayout;
 
     public void init()
     {
-        showMenu.setOnMouseClicked((event) -> System.out.println("showing menu"));
-        closeButton.setOnMouseClicked((event) -> Main.getStage().close());
-        iconifyButton.setOnMouseClicked((event) -> Main.getStage().setIconified(true));
-        maximizeButton.setOnMouseClicked((event) -> {if (!maximized) maximize(); else  restore();});
-        moviesScrollPane.setPrefWidth(Main.getStage().getWidth());
-        moviesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        for (int i = 0; i < 50; i++) moviesTile.getChildren().add(new VideoGraphics(null));
+        initSettingsDialog();
     }
 
     public LinearGradient blueGradient()
@@ -74,5 +58,49 @@ public class MainController
         Main.getStage().centerOnScreen();
         maximized = false;
         sizeControlIcon.setIcon(MaterialDesignIcon.WINDOW_MAXIMIZE);
+    }
+
+    private void resizeMoviesList()
+    {
+        moviesTile.setPrefWidth(Main.getStage().getWidth());
+        moviesTile.setPrefHeight(Main.getStage().getHeight());
+        moviesTile.setPrefColumns(Settings.getItemsPerLine());
+        moviesTile.setTileAlignment(Pos.CENTER);
+        moviesTile.setPrefTileWidth((moviesTile.getPrefWidth()-(moviesTile.getHgap()*(Settings.getItemsPerLine()+1)))/Settings.getItemsPerLine());
+        moviesTile.setPrefTileHeight(moviesTile.getPrefTileWidth()*1.5186);
+    }
+
+    private void initSettingsDialog()
+    {
+        AnchorPane pane = new AnchorPane();
+        dialogLayout.setBody(pane);
+        dialogLayout.setHeading(new Label("Settings"));
+    }
+
+    public void showOptions(ActionEvent actionEvent)
+    {
+//        settingsDialog.setTransitionType(JFXDialog.DialogTransition.CENTER);
+//        settingsDialog.show(mainPane);
+        FilmEditor editor = new FilmEditor(null);
+        editor.setTransitionType(JFXDialog.DialogTransition.CENTER);
+        editor.show(mainPane);
+    }
+
+    public void close(ActionEvent actionEvent)
+    {
+        Main.getStage().close();
+    }
+
+    public void iconfy(ActionEvent actionEvent)
+    {
+        Main.getStage().setIconified(true);
+    }
+
+    public void resize(ActionEvent actionEvent)
+    {
+        if (maximized)
+            restore();
+        else
+            maximize();
     }
 }
