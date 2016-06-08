@@ -1,5 +1,7 @@
 package itmakers.mdb.storage;
 
+import java.util.HashMap;
+
 public class StorageSettings
 {
     public static String moviesDbLocation;
@@ -8,6 +10,5 @@ public class StorageSettings
     public static String moviesPostersFolder;
     public static String showsPostersFolder;
     public static String tempFolder = "tmp";
-
 
 }

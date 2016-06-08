@@ -1,9 +1,13 @@
 package itmakers.mdb;
 
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -33,13 +37,16 @@ public class Main extends Application
         mainStage.show();
         controller.init();
         mainStage.setResizable(false);
-//        BufferedReader in = new BufferedReader(new InputStreamReader(new URL("http://www.omdbapi.com/?t=iron+man&y=&plot=full&r=json").openStream()));
-//        String out = "";
-//        String inputLine;
-//        while ((inputLine = in.readLine()) != null)
-//            out+=inputLine;
-//        in.close();
-//        JSONParser p = new JSONParser(out, JSONParser.Type.TITLE);
-//        System.out.println(p.parse("plot").get(0));
+    }
+
+    public static JFXDialog dialogManager(String message)
+    {
+        JFXDialog dialog = new JFXDialog();
+        JFXDialogLayout layout = new JFXDialogLayout();
+        dialog.setContent(layout);
+        layout.setBody(new Label(message));
+        dialog.setTransitionType(JFXDialog.DialogTransition.CENTER);
+        Platform.runLater(() -> dialog.show(controller.mainPane));
+        return dialog;
     }
 }

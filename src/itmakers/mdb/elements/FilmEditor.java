@@ -14,28 +14,11 @@ import org.controlsfx.control.CheckComboBox;
 
 public class FilmEditor extends JFXDialog
 {
-    public ImageView posterImageView;
-    public JFXTextField titleLabel;
-    public JFXTextField fileLocationLabel;
-    public JFXTextField trailerField;
-    public JFXTextField yearLabel;
-    public JFXTextField RuntimeLabel;
-    public CheckComboBox genreCheckBox;
-    public JFXSlider ratingSlider;
-    public JFXTextField writerLabel;
-    public JFXTextArea plotArea;
-    public Label filmCounter;
-    public JFXButton closeButton;
-    public JFXButton saveAndCloseButton;
-    public JFXButton deleteButton;
-    public JFXButton saveAndNextButton;
-    public VBox posterOptions;
-    public StackPane posterPane;
-
     private Movie movie;
 
     public FilmEditor(Movie m)
     {
+        this.movie = m;
         loadUI();
     }
 
@@ -48,7 +31,7 @@ public class FilmEditor extends JFXDialog
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../layouts/Dialog.fxml"));
             Parent content = loader.load();
             FilmEditorController c = loader.getController();
-            c.init(this);
+            c.init(this, movie);
             JFXDialogLayout layout = new JFXDialogLayout();
             this.setPrefSize(Main.getStage().getScene().getWidth(), Main.getStage().getScene().getHeight());
             layout.setBody(content);

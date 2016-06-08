@@ -6,7 +6,9 @@ import itmakers.mdb.Main;
 import itmakers.mdb.Movie;
 import itmakers.mdb.services.JSONParser;
 import itmakers.mdb.services.OMDBApi;
+import itmakers.mdb.storage.StorageSettings;
 import javafx.event.ActionEvent;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,7 +18,9 @@ import javafx.stage.FileChooser;
 import org.controlsfx.control.CheckComboBox;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 
 public class FilmEditorController
@@ -51,8 +55,9 @@ public class FilmEditorController
         api = new OMDBApi(titleLabel.getText(), JSONParser.Type.movie);
     }
 
-    public void init(JFXDialog d)
+    public void init(JFXDialog d, Movie m)
     {
+        this.movie = m;
         this.dialog = d;
         posterPane.setOnMouseEntered((e) ->
         {
@@ -63,6 +68,8 @@ public class FilmEditorController
         for(Genres g : Genres.values())
             genreCheckBox.getItems().add(g.toString());
         plotArea.setWrapText(true);
+        if (movie == null)
+            deleteButton.setDisable(true);
     }
 
     public void removePoster(ActionEvent actionEvent)
@@ -100,11 +107,24 @@ public class FilmEditorController
 
     public void chooseMovieFile(ActionEvent actionEvent)
     {
-
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Video file", "*.mp4", "*.avi", "*.wmv", "*.mpg", "*.mpeg", "*.flv", "*.3gp", "*.mkv"));
+        File f = chooser.showOpenDialog(Main.getStage());
+        if (f != null)
+        {
+            fileLocationLabel.setText(f.getAbsolutePath());
+        }
     }
 
     public void chooseTrailerFile(ActionEvent actionEvent)
     {
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Video file", "*.mp4", "*.avi", "*.wmv", "*.mpg", "*.mpeg", "*.flv", "*.3gp", "*.mkv"));
+        File f = chooser.showOpenDialog(Main.getStage());
+        if (f != null)
+        {
+            trailerField.setText(f.getAbsolutePath());
+        }
     }
 
     public void chooseActors(ActionEvent actionEvent)
@@ -147,12 +167,20 @@ public class FilmEditorController
             List<String> genre = api.parser.parse("genre");
             List<String> actors = api.parser.parse("actors");
 
+            if (title.size() < 1)
+            {
+                Main.dialogManager("This film is not present in our database");
+                return;
+            }
             yearLabel.setText((year.size()>0)?year.get(0):"null");
             runtimeLabel.setText((runtime.size()>0)?runtime.get(0):"null");
             writerLabel.setText((writer.size()>0)?writer.get(0):"null");
             plotArea.setText((plot.size()>0)?plot.get(0):"null");
             titleLabel.setText((title.size()>0)?title.get(0):"null");
-
+            System.out.println(genre);
+            if (genre.size() != 0)
+                for (String g:genre.get(0).split(","))
+                    genreCheckBox.getItems().stream().filter(o -> ((String) o).replaceAll("_", "-").equalsIgnoreCase(g.replaceAll("\\s+", ""))).forEach(o -> genreCheckBox.getCheckModel().check(o));
         }
     }
 }

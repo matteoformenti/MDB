@@ -35,8 +35,6 @@ public class MainController
     {
         initSettingsDialog();
         moviesTile = new TilePane();
-        for (int i = 0; i < 8; i++)
-            moviesTile.getChildren().add(new MovieGraphics(null));
         moviesScrollPane.setContent(moviesTile);
         moviesTile.setPrefColumns(3);
         moviesTile.setTileAlignment(Pos.CENTER);
