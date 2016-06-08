@@ -6,11 +6,11 @@ import com.jfoenix.controls.JFXTabPane;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import itmakers.mdb.elements.FilmEditor;
-import itmakers.mdb.elements.VideoGraphics;
+import itmakers.mdb.elements.MovieGraphics;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -29,10 +29,20 @@ public class MainController
     public StackPane mainPane;
     public JFXTabPane tabPane;
     public JFXDialogLayout dialogLayout;
+    public ScrollPane moviesScrollPane;
 
     public void init()
     {
         initSettingsDialog();
+        moviesTile = new TilePane();
+        for (int i = 0; i < 8; i++)
+            moviesTile.getChildren().add(new MovieGraphics(null));
+        moviesScrollPane.setContent(moviesTile);
+        moviesTile.setPrefColumns(3);
+        moviesTile.setTileAlignment(Pos.CENTER);
+        moviesTile.setPrefRows(1);
+        moviesTile.setHgap(20);
+        moviesTile.setVgap(20);
     }
 
     public LinearGradient blueGradient()
@@ -91,7 +101,7 @@ public class MainController
         Main.getStage().close();
     }
 
-    public void iconfy(ActionEvent actionEvent)
+    public void iconify(ActionEvent actionEvent)
     {
         Main.getStage().setIconified(true);
     }

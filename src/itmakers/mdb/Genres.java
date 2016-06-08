@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public enum Genres implements Serializable
 {
-    COMMEDY,
+    COMEDY,
     FAMILY,
     DRAMA,
     TALK_SHOW,
@@ -18,14 +18,14 @@ public enum Genres implements Serializable
     CRIME,
     GAME_SHOWS,
     NEWS,
-    MISTERY,
+    MYSTERY,
     HORROR,
     MUSICAL,
     DOCUMENTARIES,
     THRILLERS,
     REALITY_TV,
     SPORT,
-    HISORY,
+    HISTORY,
     WESTERN,
     WAR,
     BIOGRAPHIES,

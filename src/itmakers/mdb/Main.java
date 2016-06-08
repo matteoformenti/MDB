@@ -1,15 +1,11 @@
 package itmakers.mdb;
 
-import itmakers.mdb.services.JSONParser;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
 
 public class Main extends Application
 {
@@ -43,7 +39,7 @@ public class Main extends Application
 //        while ((inputLine = in.readLine()) != null)
 //            out+=inputLine;
 //        in.close();
-//        JSONParser p = new JSONParser(out, JSONParser.Response.TITLE);
+//        JSONParser p = new JSONParser(out, JSONParser.Type.TITLE);
 //        System.out.println(p.parse("plot").get(0));
     }
 }

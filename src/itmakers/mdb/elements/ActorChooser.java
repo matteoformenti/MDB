@@ -31,7 +31,5 @@ public class ActorChooser extends JFXDialog
         JFXButton saveButton = new JFXButton("Save");
         JFXButton closeButton = new JFXButton("Close");
         closeButton.setOnAction((event -> this.close()));
-
     }
-
 }

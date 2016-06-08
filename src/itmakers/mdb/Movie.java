@@ -1,5 +1,6 @@
 package itmakers.mdb;
 
+import itmakers.mdb.elements.MovieGraphics;
 import javafx.scene.image.Image;
 
 import java.io.Serializable;
@@ -16,11 +17,21 @@ public class Movie implements Serializable
     private String plot;
     private String imdbID;
     private String poster;
-    private int movieID;
 
     private String localURL;
     private int localRating;
     private Image posterImage;
+    private MovieGraphics graphics;
+
+    public MovieGraphics getGraphics()
+    {
+        return graphics;
+    }
+
+    public void setGraphics(MovieGraphics graphics)
+    {
+        this.graphics = graphics;
+    }
 
     public String getTitle()
     {
