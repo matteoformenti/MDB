@@ -6,9 +6,8 @@ import itmakers.mdb.Main;
 import itmakers.mdb.Movie;
 import itmakers.mdb.services.JSONParser;
 import itmakers.mdb.services.OMDBApi;
-import itmakers.mdb.storage.StorageSettings;
+import itmakers.mdb.storage.GeneralStorage;
 import javafx.event.ActionEvent;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,9 +17,7 @@ import javafx.stage.FileChooser;
 import org.controlsfx.control.CheckComboBox;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 
 public class FilmEditorController
@@ -58,6 +55,11 @@ public class FilmEditorController
     public void init(JFXDialog d, Movie m)
     {
         this.movie = m;
+        if (movie == null)
+        {
+            movie = new Movie();
+            deleteButton.setDisable(true);
+        }
         this.dialog = d;
         posterPane.setOnMouseEntered((e) ->
         {
@@ -68,8 +70,6 @@ public class FilmEditorController
         for(Genres g : Genres.values())
             genreCheckBox.getItems().add(g.toString());
         plotArea.setWrapText(true);
-        if (movie == null)
-            deleteButton.setDisable(true);
     }
 
     public void removePoster(ActionEvent actionEvent)
@@ -98,7 +98,7 @@ public class FilmEditorController
             List<String> values = api.parser.parse("poster");
             if (values.size() < 1)
             {
-                System.out.println("error getting poster");
+                Main.dialogManager("This film is not present in our database");
                 return;
             }
             posterImageView.setImage(new Image(values.get(0)));
@@ -172,6 +172,12 @@ public class FilmEditorController
                 Main.dialogManager("This film is not present in our database");
                 return;
             }
+            for (String actor : actors.get(0).split(","))
+                if (!movie.getActors().contains(actor))
+                {
+                    movie.getActors().add(actor);
+                    GeneralStorage.actors.add(actor);
+                }
             yearLabel.setText((year.size()>0)?year.get(0):"null");
             runtimeLabel.setText((runtime.size()>0)?runtime.get(0):"null");
             writerLabel.setText((writer.size()>0)?writer.get(0):"null");

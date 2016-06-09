@@ -4,6 +4,7 @@ import itmakers.mdb.elements.MovieGraphics;
 import javafx.scene.image.Image;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Movie implements Serializable
@@ -11,9 +12,9 @@ public class Movie implements Serializable
     private String title;
     private String year;
     private String runtime;
-    private List<Genres> genres;
+    private List<Genres> genres = new ArrayList<>();
     private String director;
-    private List<String> actors;
+    private List<String> actors = new ArrayList<>();
     private String plot;
     private String imdbID;
     private String poster;

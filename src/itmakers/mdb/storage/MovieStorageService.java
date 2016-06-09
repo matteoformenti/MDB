@@ -8,10 +8,21 @@ import java.util.List;
 
 public class MovieStorageService implements Serializable
 {
-    private List<Movie> movies = new ArrayList<>();
+    private static List<Movie> movies = new ArrayList<>();
 
-    public List<Movie> getMovies()
+    public static List<Movie> getMovies()
     {
         return movies;
+    }
+
+    public static void addMovie(Movie m)
+    {
+        movies.add(m);
+        saveDB();
+    }
+
+    public static void saveDB()
+    {
+
     }
 }
