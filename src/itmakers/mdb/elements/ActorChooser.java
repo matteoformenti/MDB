@@ -3,6 +3,7 @@ package itmakers.mdb.elements;
 import com.jfoenix.controls.*;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
 import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
+import itmakers.mdb.Main;
 import itmakers.mdb.Movie;
 import itmakers.mdb.storage.GeneralStorage;
 import javafx.application.Platform;
@@ -15,6 +16,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ActorChooser extends JFXDialog
@@ -25,6 +27,7 @@ public class ActorChooser extends JFXDialog
     public ActorChooser(Movie m)
     {
         this.m = m;
+        list.getStylesheets().add(getClass().getResource("../style.css").toExternalForm());
         this.setPrefWidth(200);
         this.setPrefHeight(300);
         JFXDialogLayout layout = new JFXDialogLayout();
@@ -39,6 +42,23 @@ public class ActorChooser extends JFXDialog
         HBox.setHgrow(searchActorField, Priority.ALWAYS);
         searchActorField.setOnKeyReleased((event) -> reloadList(searchActorField.getText()));
         JFXButton newActorButton = new JFXButton("Add new Actor", new MaterialDesignIconView(MaterialDesignIcon.PLUS));
+        newActorButton.setOnAction((event ->
+        {
+            boolean exists = false;
+            for (String a : GeneralStorage.actors)
+                if (a.toLowerCase().equals(searchActorField.getText().toLowerCase()))
+                    exists = true;
+            if (exists)
+                Main.dialogManager("This actor already exists");
+            else if (searchActorField.getText().equals(" ") || searchActorField.getText().equals(""))
+                Main.dialogManager("The actor name isn't valid!");
+            else
+            {
+                GeneralStorage.actors.add(searchActorField.getText());
+                searchActorField.setText("");
+                reloadList("");
+            }
+        }));
         newActorBox.getChildren().addAll(searchActorField, newActorButton);
         reloadList("");
         vBox.getChildren().addAll(newActorBox, list);
@@ -46,6 +66,12 @@ public class ActorChooser extends JFXDialog
         JFXButton closeButton = new JFXButton("Close");
         layout.setActions(closeButton);
         closeButton.setOnAction((event -> this.close()));
+        this.setOnDialogClosed((e) ->
+        {
+            m.getActors().removeAll(m.getActors());
+            list.getItems().stream().filter(o -> ((JFXCheckBox) o).isSelected()).forEach(o -> m.getActors().add(((JFXCheckBox) o).getText()));
+            m.getActors().forEach(System.out::println);
+        });
     }
 
     public void reloadList(String contains)
