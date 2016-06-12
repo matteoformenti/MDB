@@ -16,7 +16,6 @@ public class JSONParser
     private JSONObject obj;
     JSONParser(String in, Type r)
     {
-        System.out.println(in);
         obj = new JSONObject(in);
     }
 

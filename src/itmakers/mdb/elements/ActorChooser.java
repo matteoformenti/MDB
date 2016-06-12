@@ -70,11 +70,10 @@ public class ActorChooser extends JFXDialog
         {
             m.getActors().removeAll(m.getActors());
             list.getItems().stream().filter(o -> ((JFXCheckBox) o).isSelected()).forEach(o -> m.getActors().add(((JFXCheckBox) o).getText()));
-            m.getActors().forEach(System.out::println);
         });
     }
 
-    public void reloadList(String contains)
+    private void reloadList(String contains)
     {
         list.getItems().removeAll(list.getItems());
         for (String a : GeneralStorage.actors)

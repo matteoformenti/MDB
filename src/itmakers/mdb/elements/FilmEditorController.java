@@ -8,7 +8,9 @@ import itmakers.mdb.services.JSONParser;
 import itmakers.mdb.services.OMDBApi;
 import itmakers.mdb.storage.GeneralStorage;
 import itmakers.mdb.storage.MovieStorageService;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -54,7 +56,7 @@ public class FilmEditorController
         api = new OMDBApi(titleLabel.getText(), JSONParser.Type.movie);
     }
 
-    public void init(JFXDialog d, Movie m)
+    void init(JFXDialog d, Movie m)
     {
         saveAndNextButton.setDisable(true);
         this.movie = m;
@@ -73,9 +75,15 @@ public class FilmEditorController
         for(Genres g : Genres.values())
             genreCheckBox.getItems().add(g.toString());
         plotArea.setWrapText(true);
+        genreCheckBox.getCheckModel().getCheckedItems().addListener((ListChangeListener) (e) ->
+        {
+            movie.getGenres().removeAll(movie.getGenres());
+            genreCheckBox.getCheckModel().getCheckedItems().stream().forEach((c) -> movie.getGenres().add(Genres.valueOf((String) c)));
+        }
+        );
     }
 
-    public void setEditor(FilmEditor editor)
+    void setEditor(FilmEditor editor)
     {
         this.editorManager = editor;
     }
@@ -162,6 +170,10 @@ public class FilmEditorController
 
     public void closeDialog(ActionEvent actionEvent)
     {
+        for (Genres s:movie.getGenres())
+        {
+            System.out.println(s);
+        }
         dialog.close();
     }
 
@@ -195,7 +207,6 @@ public class FilmEditorController
             directorLabel.setText((director!=null)?director:"null");
             plotArea.setText((plot!=null)?plot:"null");
             titleLabel.setText((title!=null)?title:"null");
-            System.out.println(genre);
             if (genre!=null)
                 for (String g:genre.split(","))
                     genreCheckBox.getItems().stream().filter(o -> ((String) o).replaceAll("_", "-").equalsIgnoreCase(g.replaceAll("\\s+", ""))).forEach(o -> genreCheckBox.getCheckModel().check(o));

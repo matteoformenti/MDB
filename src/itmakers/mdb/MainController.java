@@ -36,7 +36,7 @@ public class MainController
     private JFXDialog settingsDialog = new JFXDialog();
     private JFXDialog movieEditorDialog = new JFXDialog();
 
-    public void init()
+    void init()
     {
         initSettingsDialog();
         initMovieEditorDialog();
@@ -80,7 +80,7 @@ public class MainController
         vbox.getChildren().add(hBox);
         HBox hBox1 = new HBox();
         group.selectedToggleProperty().addListener((e) -> {
-            if (new String(e.toString()).contains("Folder entry mode"))
+            if (e.toString().contains("Folder entry mode"))
                 hBox1.setDisable(false);
             else
                 hBox1.setDisable(true);
@@ -109,7 +109,6 @@ public class MainController
         JFXButton openEditorButton = new JFXButton("Open Editor");
         openEditorButton.setOnAction((event) ->
         {
-            System.out.println(group.getSelectedToggle());
             if (((JFXRadioButton)group.getSelectedToggle()).getText().equals("Single entry mode"))
             {
                 FilmEditor editor = new FilmEditor(null, null);
@@ -170,9 +169,6 @@ public class MainController
 
     public void addMovie(ActionEvent actionEvent)
     {
-//        FilmEditor editor = new FilmEditor(null);
-//        editor.setTransitionType(JFXDialog.DialogTransition.CENTER);
-//        editor.show(mainUI);
         popup.close();
         movieEditorDialog.show();
     }
