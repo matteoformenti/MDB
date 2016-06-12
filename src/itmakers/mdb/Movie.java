@@ -18,11 +18,21 @@ public class Movie implements Serializable
     private String plot;
     private String imdbID;
     private String poster;
-
+    private String localURLTrailer;
     private String localURL;
     private int localRating;
     private Image posterImage;
     private MovieGraphics graphics;
+
+    public String getLocalURLTrailer()
+    {
+        return localURLTrailer;
+    }
+
+    public void setLocalURLTrailer(String localURLTrailer)
+    {
+        this.localURLTrailer = localURLTrailer;
+    }
 
     public MovieGraphics getGraphics()
     {

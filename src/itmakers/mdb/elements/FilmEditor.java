@@ -26,7 +26,9 @@ public class FilmEditor extends JFXDialog
         if (folder!=null)
         {
             walkDirectory(folder);
-            c.filmCounter.setText(files.size()+" movies in the selected folder");
+            if (files.size() == 1)
+                c.saveAndNextButton.setDisable(true);
+            c.filmCounter.setText(files.size()-1+" more movies in the selected folder");
             c.fileLocationLabel.setText(files.get(0).toString());
             c.saveAndNextButton.setDisable(false);
         }
@@ -76,5 +78,16 @@ public class FilmEditor extends JFXDialog
         {
             e.printStackTrace();
         }
+    }
+
+    public Path getNextMovie()
+    {
+        files.remove(0);
+        return files.get(0);
+    }
+
+    public int getFilesSize()
+    {
+        return files.size();
     }
 }

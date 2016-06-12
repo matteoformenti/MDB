@@ -43,6 +43,7 @@ public class FilmEditorController
     public JFXTextField runtimeLabel;
     public JFXTextField directorLabel;
     private OMDBApi api;
+    private String imdbID;
 
     private Movie movie;
     private JFXDialog dialog;
@@ -162,10 +163,42 @@ public class FilmEditorController
 
     public void saveAndNext(ActionEvent actionEvent)
     {
+        if (titleLabel.getText().equals("") || titleLabel.getText().equals(" "))
+        {
+            Main.dialogManager("Title not valid: unable to create a new movie");
+            return;
+        }
         movie.setTitle(titleLabel.getText());
         movie.setYear(yearLabel.getText());
         movie.setRuntime(runtimeLabel.getText());
         movie.setDirector(directorLabel.getText());
+        movie.setPlot(plotArea.getText());
+        movie.setPosterImage(posterImageView.getImage());
+        movie.setImdbID(imdbID);
+        movie.setLocalURL(fileLocationLabel.getText());
+        movie.setLocalURLTrailer(trailerField.getText());
+        movie.setLocalRating((int) ratingSlider.getValue());
+        MovieStorageService.addMovie(movie);
+        movie = new Movie();
+        resetFields();
+        fileLocationLabel.setText(editorManager.getNextMovie().toString());
+        if (editorManager.getFilesSize() == 1)
+            saveAndNextButton.setDisable(true);
+        filmCounter.setText(editorManager.getFilesSize()-1+" more movies in the selected folder");
+    }
+
+    private void resetFields()
+    {
+        posterImageView.setImage(null);
+        titleLabel.setText(null);
+        yearLabel.setText(null);
+        runtimeLabel.setText(null);
+        directorLabel.setText(null);
+        plotArea.setText(null);
+        imdbID = null;
+        fileLocationLabel.setText(null);
+        trailerField.setText(null);
+        ratingSlider.setValue(2);
     }
 
     public void closeDialog(ActionEvent actionEvent)
@@ -207,6 +240,7 @@ public class FilmEditorController
             directorLabel.setText((director!=null)?director:"null");
             plotArea.setText((plot!=null)?plot:"null");
             titleLabel.setText((title!=null)?title:"null");
+            imdbID = imdbid;
             if (genre!=null)
                 for (String g:genre.split(","))
                     genreCheckBox.getItems().stream().filter(o -> ((String) o).replaceAll("_", "-").equalsIgnoreCase(g.replaceAll("\\s+", ""))).forEach(o -> genreCheckBox.getCheckModel().check(o));
