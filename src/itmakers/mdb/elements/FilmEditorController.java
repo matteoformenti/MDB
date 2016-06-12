@@ -6,11 +6,10 @@ import itmakers.mdb.Main;
 import itmakers.mdb.Movie;
 import itmakers.mdb.services.JSONParser;
 import itmakers.mdb.services.OMDBApi;
-import itmakers.mdb.storage.GeneralStorage;
+import itmakers.mdb.storage.Settings;
 import itmakers.mdb.storage.MovieStorageService;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,7 +19,6 @@ import javafx.stage.FileChooser;
 import org.controlsfx.control.CheckComboBox;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.List;
 
 
 public class FilmEditorController
@@ -147,7 +145,7 @@ public class FilmEditorController
     public void chooseActors(ActionEvent actionEvent)
     {
         ActorChooser actorChooser = new ActorChooser(movie);
-        actorChooser.show(Main.controller.mainUI);
+        actorChooser.show(Main.controller.mainPane);
     }
 
     public void deleteMovie(ActionEvent actionEvent)
@@ -157,7 +155,27 @@ public class FilmEditorController
 
     public void saveAndClose(ActionEvent actionEvent)
     {
-        MovieStorageService.addMovie(movie);
+        if (titleLabel.getText().equals("") || titleLabel.getText().equals(" "))
+        {
+            Main.dialogManager("Title not valid: unable to create a new movie");
+            return;
+        }
+        MovieStorageService.addMovie(new Movie());
+        Movie tmp = MovieStorageService.getLastMovie();
+        tmp.setTitle(titleLabel.getText());
+        tmp.setYear(yearLabel.getText());
+        tmp.setRuntime(runtimeLabel.getText());
+        tmp.setDirector(directorLabel.getText());
+        tmp.setPlot(plotArea.getText());
+        tmp.setPosterImage(posterImageView.getImage());
+        tmp.setImdbID(imdbID);
+        tmp.setLocalURL(fileLocationLabel.getText());
+        tmp.setLocalURLTrailer(trailerField.getText());
+        tmp.setLocalRating((int) ratingSlider.getValue());
+        generateGraphic();
+        MovieStorageService.updateList(tmp);
+        resetFields();
+        movie = new Movie();
         this.closeDialog(null);
     }
 
@@ -168,22 +186,25 @@ public class FilmEditorController
             Main.dialogManager("Title not valid: unable to create a new movie");
             return;
         }
-        movie.setTitle(titleLabel.getText());
-        movie.setYear(yearLabel.getText());
-        movie.setRuntime(runtimeLabel.getText());
-        movie.setDirector(directorLabel.getText());
-        movie.setPlot(plotArea.getText());
-        movie.setPosterImage(posterImageView.getImage());
-        movie.setImdbID(imdbID);
-        movie.setLocalURL(fileLocationLabel.getText());
-        movie.setLocalURLTrailer(trailerField.getText());
-        movie.setLocalRating((int) ratingSlider.getValue());
-        MovieStorageService.addMovie(movie);
-        movie = new Movie();
+        MovieStorageService.addMovie(new Movie());
+        Movie tmp = MovieStorageService.getLastMovie();
+        tmp.setTitle(titleLabel.getText());
+        tmp.setYear(yearLabel.getText());
+        tmp.setRuntime(runtimeLabel.getText());
+        tmp.setDirector(directorLabel.getText());
+        tmp.setPlot(plotArea.getText());
+        tmp.setPosterImage(posterImageView.getImage());
+        tmp.setImdbID(imdbID);
+        tmp.setLocalURL(fileLocationLabel.getText());
+        tmp.setLocalURLTrailer(trailerField.getText());
+        tmp.setLocalRating((int) ratingSlider.getValue());
+        generateGraphic();
+        MovieStorageService.updateList(tmp);
         resetFields();
         fileLocationLabel.setText(editorManager.getNextMovie().toString());
         if (editorManager.getFilesSize() == 1)
             saveAndNextButton.setDisable(true);
+        movie = new Movie();
         filmCounter.setText(editorManager.getFilesSize()-1+" more movies in the selected folder");
     }
 
@@ -198,7 +219,7 @@ public class FilmEditorController
         imdbID = null;
         fileLocationLabel.setText(null);
         trailerField.setText(null);
-        ratingSlider.setValue(2);
+        ratingSlider.setValue(1);
     }
 
     public void closeDialog(ActionEvent actionEvent)
@@ -233,7 +254,7 @@ public class FilmEditorController
                 if (!movie.getActors().contains(actor))
                 {
                     movie.getActors().add(actor);
-                    GeneralStorage.actors.add(actor);
+                    Settings.actors.add(actor);
                 }
             yearLabel.setText((year!=null)?year:"null");
             runtimeLabel.setText((runtime!=null)?runtime:"null");
@@ -245,5 +266,23 @@ public class FilmEditorController
                 for (String g:genre.split(","))
                     genreCheckBox.getItems().stream().filter(o -> ((String) o).replaceAll("_", "-").equalsIgnoreCase(g.replaceAll("\\s+", ""))).forEach(o -> genreCheckBox.getCheckModel().check(o));
         }
+    }
+
+    private void generateGraphic()
+    {
+        MovieStorageService.getLastMovie().setGraphics(new MovieGraphics(MovieStorageService.getLastMovie()));
+    }
+
+    void loadMovieData(Movie movie)
+    {
+        titleLabel.setText(movie.getTitle());
+        yearLabel.setText(movie.getYear());
+        runtimeLabel.setText(movie.getRuntime());
+        directorLabel.setText(movie.getDirector());
+        plotArea.setText(movie.getPlot());
+        posterImageView.setImage(movie.getPosterImage());
+        fileLocationLabel.setText(movie.getLocalURL());
+        trailerField.setText(movie.getLocalURLTrailer());
+        ratingSlider.setValue(movie.getLocalRating());
     }
 }

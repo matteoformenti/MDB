@@ -2,9 +2,12 @@ package itmakers.mdb;
 
 import com.jfoenix.controls.*;
 import itmakers.mdb.elements.FilmEditor;
+import itmakers.mdb.elements.MovieGraphics;
+import itmakers.mdb.storage.Settings;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
@@ -36,21 +39,38 @@ public class MainController
     private JFXDialog settingsDialog = new JFXDialog();
     private JFXDialog movieEditorDialog = new JFXDialog();
 
+    private TilePane moviesTilePane = new TilePane();
+
     void init()
     {
         initSettingsDialog();
         initMovieEditorDialog();
         initPopup();
+        moviesScrollPane.setContent(moviesTilePane);
+        moviesTilePane.setVgap(20);
+        moviesTilePane.setHgap(20);
+        moviesTilePane.setPadding(new Insets(20));
+        resizeMoviesList();
+        mainPane.widthProperty().addListener((e) -> resizeMoviesList());
+        mainPane.heightProperty().addListener((e) -> resizeMoviesList());
+    }
+
+    public void addToMoviesList(Movie m)
+    {
+        moviesTilePane.getChildren().add(m.getGraphics());
+        resizeMoviesList();
     }
 
     private void resizeMoviesList()
     {
-//        moviesTile.setPrefWidth(Main.getStage().getWidth());
-//        moviesTile.setPrefHeight(Main.getStage().getHeight());
-//        moviesTile.setPrefColumns(Settings.getItemsPerLine());
-//        moviesTile.setTileAlignment(Pos.CENTER);
-//        moviesTile.setPrefTileWidth((moviesTile.getPrefWidth()-(moviesTile.getHgap()*(Settings.getItemsPerLine()+1)))/Settings.getItemsPerLine());
-//        moviesTile.setPrefTileHeight(moviesTile.getPrefTileWidth()*1.5186);
+        moviesTilePane.setPrefWidth(Main.getStage().getWidth());
+        moviesTilePane.setPrefHeight(Main.getStage().getHeight());
+        moviesTilePane.setPrefColumns(Settings.getMoviesPerRow());
+        moviesTilePane.setTileAlignment(Pos.CENTER);
+        moviesTilePane.setPrefTileWidth((moviesTilePane.getPrefWidth()-40-(moviesTilePane.getHgap()*(Settings.getMoviesPerRow()+1)))/Settings.getMoviesPerRow());
+        moviesTilePane.setPrefTileHeight(moviesTilePane.getPrefTileWidth()*1.5186);
+        for (Node g : moviesTilePane.getChildren())
+            ((MovieGraphics)g).resizeGraphic(moviesTilePane.getTileWidth(), moviesTilePane.getTileHeight());
     }
 
     private void initMovieEditorDialog()
@@ -112,15 +132,11 @@ public class MainController
             if (((JFXRadioButton)group.getSelectedToggle()).getText().equals("Single entry mode"))
             {
                 FilmEditor editor = new FilmEditor(null, null);
-                editor.setTransitionType(JFXDialog.DialogTransition.CENTER);
-                editor.show(mainPane);
                 movieEditorDialog.close();
             }
             else if (((JFXRadioButton)group.getSelectedToggle()).getText().equals("Folder entry mode") && !folderPosition.getText().equals("No folder selected"))
             {
                 FilmEditor editor = new FilmEditor(null, folderPosition.getText());
-                editor.setTransitionType(JFXDialog.DialogTransition.CENTER);
-                editor.show(mainPane);
                 movieEditorDialog.close();
             }
             else if (((JFXRadioButton)group.getSelectedToggle()).getText().equals("Folder entry mode") && folderPosition.getText().equals("No folder selected"))
@@ -181,5 +197,10 @@ public class MainController
     public void showInfo(ActionEvent actionEvent)
     {
         popup.close();
+    }
+
+    public void removeFromMoviesList(Movie movie)
+    {
+        moviesTilePane.getChildren().remove(movie);
     }
 }

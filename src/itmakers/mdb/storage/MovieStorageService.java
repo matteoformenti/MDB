@@ -1,5 +1,6 @@
 package itmakers.mdb.storage;
 
+import itmakers.mdb.Main;
 import itmakers.mdb.Movie;
 
 import java.io.Serializable;
@@ -21,14 +22,27 @@ public class MovieStorageService implements Serializable
         saveDB();
     }
 
-    public static void saveDB()
+    private static void saveDB()
     {
 
+    }
+
+    public static Movie getLastMovie()
+    {
+        if (movies.size() > 0)
+            return movies.get(movies.size()-1);
+        return null;
     }
 
     public static void remove(Movie movie)
     {
         movies.remove(movie);
+        Main.controller.removeFromMoviesList(movie);
         saveDB();
+    }
+
+    public static void updateList(Movie movie)
+    {
+        Main.controller.addToMoviesList(movie);
     }
 }

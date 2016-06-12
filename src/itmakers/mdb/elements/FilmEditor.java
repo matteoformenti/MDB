@@ -22,6 +22,7 @@ public class FilmEditor extends JFXDialog
     public FilmEditor(Movie m, String folder)
     {
         loadUI();
+        this.setTransitionType(DialogTransition.CENTER);
         this.movie = m;
         if (folder!=null)
         {
@@ -29,11 +30,26 @@ public class FilmEditor extends JFXDialog
             if (files.size() == 1)
                 c.saveAndNextButton.setDisable(true);
             c.filmCounter.setText(files.size()-1+" more movies in the selected folder");
-            c.fileLocationLabel.setText(files.get(0).toString());
-            c.saveAndNextButton.setDisable(false);
+            if (files.size() > 0)
+            {
+                c.fileLocationLabel.setText(files.get(0).toString());
+                c.saveAndNextButton.setDisable(false);
+                this.show(Main.controller.mainPane);
+            }
+            else
+            {
+                Main.dialogManager("No movie to add in this folder");
+            }
         }
         else
+        {
             c.filmCounter.setDisable(true);
+            this.show(Main.controller.mainPane);
+        }
+        if (m != null)
+        {
+            c.loadMovieData(movie);
+        }
     }
 
     private void walkDirectory(String folder)
@@ -80,13 +96,13 @@ public class FilmEditor extends JFXDialog
         }
     }
 
-    public Path getNextMovie()
+    Path getNextMovie()
     {
         files.remove(0);
         return files.get(0);
     }
 
-    public int getFilesSize()
+    int getFilesSize()
     {
         return files.size();
     }

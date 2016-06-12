@@ -14,6 +14,7 @@ public class JSONParser
     private Type r;
     private String in;
     private JSONObject obj;
+
     JSONParser(String in, Type r)
     {
         obj = new JSONObject(in);
@@ -21,6 +22,13 @@ public class JSONParser
 
     public String parse(String parameter)
     {
-        return obj.getString(parameter);
+        try
+        {
+            return obj.getString(parameter);
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 }
