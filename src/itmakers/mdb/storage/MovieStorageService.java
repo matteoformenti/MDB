@@ -25,4 +25,10 @@ public class MovieStorageService implements Serializable
     {
 
     }
+
+    public static void remove(Movie movie)
+    {
+        movies.remove(movie);
+        saveDB();
+    }
 }

@@ -31,12 +31,11 @@ public class Main extends Application
         Parent root = loader.load();
         controller = loader.getController();
         Scene mainScene = new Scene(root, 800,600);
-        mainStage.initStyle(StageStyle.UNDECORATED);
         mainStage.setScene(mainScene);
         mainStage.setResizable(true);
         mainStage.show();
         controller.init();
-        mainStage.setResizable(false);
+        mainStage.setTitle("ITMakers MDB");
     }
 
     public static JFXDialog dialogManager(String message)

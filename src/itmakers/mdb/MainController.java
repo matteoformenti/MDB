@@ -1,114 +1,189 @@
 package itmakers.mdb;
 
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
-import com.jfoenix.controls.JFXTabPane;
-import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIcon;
-import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
+import com.jfoenix.controls.*;
 import itmakers.mdb.elements.FilmEditor;
-import itmakers.mdb.elements.MovieGraphics;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.stage.Screen;
+import javafx.scene.paint.Paint;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+
+import java.io.File;
 
 public class MainController
 {
-    public MaterialDesignIconView sizeControlIcon;
-    public AnchorPane topBar;
-    public JFXDialog settingsDialog = new JFXDialog();
-    public TilePane moviesTile;
-    
-    public boolean maximized = false;
+
+
     public StackPane mainPane;
+    public StackPane mainUI;
     public JFXTabPane tabPane;
-    public JFXDialogLayout dialogLayout;
+    public Tab moviesTab;
     public ScrollPane moviesScrollPane;
+    public Tab showTab;
+    public ScrollPane tvShowsScrollPane;
+    public JFXButton showPopupButton;
+    public AnchorPane topBar;
+    public JFXPopup popup;
+    public JFXListView popupList;
+
+    private JFXDialog infoDialog = new JFXDialog();
+    private JFXDialog settingsDialog = new JFXDialog();
+    private JFXDialog movieEditorDialog = new JFXDialog();
 
     public void init()
     {
         initSettingsDialog();
-        moviesTile = new TilePane();
-        moviesScrollPane.setContent(moviesTile);
-        moviesTile.setPrefColumns(3);
-        moviesTile.setTileAlignment(Pos.CENTER);
-        moviesTile.setPrefRows(1);
-        moviesTile.setHgap(20);
-        moviesTile.setVgap(20);
-    }
-
-    public LinearGradient blueGradient()
-    {
-        Stop[] stops = new Stop[] { new Stop(0, Color.valueOf("3F51B5")), new Stop(0.5, Color.valueOf("#2196F3")), new Stop(1, Color.valueOf("#03A9F4"))};
-        return new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
-    }
-
-    public void maximize()
-    {
-        Main.getStage().setWidth(Screen.getPrimary().getVisualBounds().getWidth());
-        Main.getStage().setHeight(Screen.getPrimary().getVisualBounds().getHeight());
-        Main.getStage().setX(0);
-        Main.getStage().setY(0);
-        maximized = true;
-        sizeControlIcon.setIcon(MaterialDesignIcon.WINDOW_RESTORE);
-    }
-
-    public void restore()
-    {
-        Main.getStage().setWidth(800);
-        Main.getStage().setHeight(600);
-        Main.getStage().centerOnScreen();
-        maximized = false;
-        sizeControlIcon.setIcon(MaterialDesignIcon.WINDOW_MAXIMIZE);
+        initMovieEditorDialog();
+        initPopup();
     }
 
     private void resizeMoviesList()
     {
-        moviesTile.setPrefWidth(Main.getStage().getWidth());
-        moviesTile.setPrefHeight(Main.getStage().getHeight());
-        moviesTile.setPrefColumns(Settings.getItemsPerLine());
-        moviesTile.setTileAlignment(Pos.CENTER);
-        moviesTile.setPrefTileWidth((moviesTile.getPrefWidth()-(moviesTile.getHgap()*(Settings.getItemsPerLine()+1)))/Settings.getItemsPerLine());
-        moviesTile.setPrefTileHeight(moviesTile.getPrefTileWidth()*1.5186);
+//        moviesTile.setPrefWidth(Main.getStage().getWidth());
+//        moviesTile.setPrefHeight(Main.getStage().getHeight());
+//        moviesTile.setPrefColumns(Settings.getItemsPerLine());
+//        moviesTile.setTileAlignment(Pos.CENTER);
+//        moviesTile.setPrefTileWidth((moviesTile.getPrefWidth()-(moviesTile.getHgap()*(Settings.getItemsPerLine()+1)))/Settings.getItemsPerLine());
+//        moviesTile.setPrefTileHeight(moviesTile.getPrefTileWidth()*1.5186);
+    }
+
+    private void initMovieEditorDialog()
+    {
+        JFXDialogLayout layout = new JFXDialogLayout();
+        movieEditorDialog.setContent(layout);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        layout.setBody(vbox);
+        AnchorPane anchorPane = new AnchorPane();
+        Label title = new Label("Select movie editor mode");
+        title.setAlignment(Pos.CENTER);
+        anchorPane.getChildren().add(title);
+        AnchorPane.setLeftAnchor(title,0.0);
+        AnchorPane.setRightAnchor(title,0.0);
+        vbox.getChildren().add(anchorPane);
+        vbox.setSpacing(20);
+        HBox hBox = new HBox();
+        ToggleGroup group = new ToggleGroup();
+        JFXRadioButton singleRadio = new JFXRadioButton("Single entry mode");
+        singleRadio.setSelected(true);
+        JFXRadioButton folderRadio = new JFXRadioButton("Folder entry mode");
+        singleRadio.setToggleGroup(group);
+        folderRadio.setToggleGroup(group);
+        hBox.setAlignment(Pos.CENTER);
+        hBox.getChildren().addAll(singleRadio, folderRadio);
+        vbox.getChildren().add(hBox);
+        HBox hBox1 = new HBox();
+        group.selectedToggleProperty().addListener((e) -> {
+            if (new String(e.toString()).contains("Folder entry mode"))
+                hBox1.setDisable(false);
+            else
+                hBox1.setDisable(true);
+        });
+        Label folderPosition = new Label("No folder selected");
+        JFXButton folderButton = new JFXButton("Choose your movies folder");
+        HBox.setHgrow(folderButton, Priority.ALWAYS);
+        HBox.setHgrow(folderPosition, Priority.ALWAYS);
+        hBox1.setDisable(true);
+        hBox1.setAlignment(Pos.CENTER);
+        hBox1.setSpacing(20);
+        hBox1.getChildren().addAll(folderButton, folderPosition);
+        folderButton.setRipplerFill(Paint.valueOf("#2196F3"));
+        folderButton.setStyle("-fx-background-color: #eeeeee");
+        folderPosition.setPadding(new Insets(5,0,0,0));
+        vbox.getChildren().add(hBox1);
+        folderButton.setOnAction((event ->
+        {
+            DirectoryChooser chooser = new DirectoryChooser();
+            File folder = chooser.showDialog(Main.getStage());
+            if (folder!=null)
+                folderPosition.setText(folder.getAbsolutePath());
+        }));
+        movieEditorDialog.setDialogContainer(mainPane);
+        movieEditorDialog.setTransitionType(JFXDialog.DialogTransition.CENTER);
+        JFXButton openEditorButton = new JFXButton("Open Editor");
+        openEditorButton.setOnAction((event) ->
+        {
+            System.out.println(group.getSelectedToggle());
+            if (((JFXRadioButton)group.getSelectedToggle()).getText().equals("Single entry mode"))
+            {
+                FilmEditor editor = new FilmEditor(null, null);
+                editor.setTransitionType(JFXDialog.DialogTransition.CENTER);
+                editor.show(mainPane);
+                movieEditorDialog.close();
+            }
+            else if (((JFXRadioButton)group.getSelectedToggle()).getText().equals("Folder entry mode") && !folderPosition.getText().equals("No folder selected"))
+            {
+                FilmEditor editor = new FilmEditor(null, folderPosition.getText());
+                editor.setTransitionType(JFXDialog.DialogTransition.CENTER);
+                editor.show(mainPane);
+                movieEditorDialog.close();
+            }
+            else if (((JFXRadioButton)group.getSelectedToggle()).getText().equals("Folder entry mode") && folderPosition.getText().equals("No folder selected"))
+            {
+                Main.dialogManager("Please, choose a folder!");
+            }
+        });
+        AnchorPane anchorPane1 = new AnchorPane();
+        anchorPane1.getChildren().add(openEditorButton);
+        AnchorPane.setLeftAnchor(openEditorButton,0.0);
+        AnchorPane.setRightAnchor(openEditorButton,0.0);
+        vbox.getChildren().add(anchorPane1);
+    }
+
+    private void initPopup()
+    {
+        popup.setContent(popupList);
+        popup.setSource(showPopupButton);
+        popup.setPopupContainer(mainPane);
+        popup.setPrefWidth(140);
+        popupList.setPrefWidth(140);
+        popupList.setFixedCellSize(30);
+        popupList.setPadding(new Insets(-1));
+        popupList.getStylesheets().add(getClass().getResource("popup.css").toExternalForm());
     }
 
     private void initSettingsDialog()
     {
-        AnchorPane pane = new AnchorPane();
-        dialogLayout.setBody(pane);
-        dialogLayout.setHeading(new Label("Settings"));
     }
 
-    public void showOptions(ActionEvent actionEvent)
+    public void showPopup(ActionEvent actionEvent)
     {
-//        settingsDialog.setTransitionType(JFXDialog.DialogTransition.CENTER);
-//        settingsDialog.show(mainPane);
-        FilmEditor editor = new FilmEditor(null);
-        editor.setTransitionType(JFXDialog.DialogTransition.CENTER);
-        editor.show(mainPane);
+        popup.setContent(popupList);
+        popup.setSource(showPopupButton);
+        popup.setPopupContainer(mainPane);
+        popup.setPrefWidth(140);
+        popupList.setPrefWidth(140);
+        popupList.setFixedCellSize(30);
+        popupList.setPadding(new Insets(-1));
+        popup.show(JFXPopup.PopupVPosition.TOP, JFXPopup.PopupHPosition.RIGHT, -1, 1);
     }
 
-    public void close(ActionEvent actionEvent)
+    public void showSettingsDialog(ActionEvent actionEvent)
     {
-        Main.getStage().close();
     }
 
-    public void iconify(ActionEvent actionEvent)
+    public void addMovie(ActionEvent actionEvent)
     {
-        Main.getStage().setIconified(true);
+//        FilmEditor editor = new FilmEditor(null);
+//        editor.setTransitionType(JFXDialog.DialogTransition.CENTER);
+//        editor.show(mainUI);
+        popup.close();
+        movieEditorDialog.show();
     }
 
-    public void resize(ActionEvent actionEvent)
+    public void addTvShow(ActionEvent actionEvent)
     {
-        if (maximized)
-            restore();
-        else
-            maximize();
+        popup.close();
+    }
+
+    public void showInfo(ActionEvent actionEvent)
+    {
+        popup.close();
     }
 }

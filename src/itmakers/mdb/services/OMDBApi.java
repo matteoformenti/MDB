@@ -19,8 +19,8 @@ public class OMDBApi
         try
         {
             this.title = title;
-            String whitespace_charclass = "[" + whitespace_chars + "]";
-            URLConnection connection = new URL (assembler(title.replaceAll(whitespace_charclass, "+"), t)).openConnection();
+            String a = "[" + whitespace_chars + "]";
+            URLConnection connection = new URL (assembler(title.replaceAll(a, "+"), t)).openConnection();
             connection.connect();
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;

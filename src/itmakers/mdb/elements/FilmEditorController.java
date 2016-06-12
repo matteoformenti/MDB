@@ -7,6 +7,7 @@ import itmakers.mdb.Movie;
 import itmakers.mdb.services.JSONParser;
 import itmakers.mdb.services.OMDBApi;
 import itmakers.mdb.storage.GeneralStorage;
+import itmakers.mdb.storage.MovieStorageService;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -29,7 +30,6 @@ public class FilmEditorController
     public JFXTextField yearLabel;
     public CheckComboBox genreCheckBox;
     public JFXSlider ratingSlider;
-    public JFXTextField writerLabel;
     public JFXTextArea plotArea;
     public Label filmCounter;
     public JFXButton closeButton;
@@ -39,10 +39,12 @@ public class FilmEditorController
     public VBox posterOptions;
     public StackPane posterPane;
     public JFXTextField runtimeLabel;
+    public JFXTextField directorLabel;
     private OMDBApi api;
 
     private Movie movie;
     private JFXDialog dialog;
+    private FilmEditor editorManager;
 
     private void loadApi()
     {
@@ -54,6 +56,7 @@ public class FilmEditorController
 
     public void init(JFXDialog d, Movie m)
     {
+        saveAndNextButton.setDisable(true);
         this.movie = m;
         if (movie == null)
         {
@@ -70,6 +73,11 @@ public class FilmEditorController
         for(Genres g : Genres.values())
             genreCheckBox.getItems().add(g.toString());
         plotArea.setWrapText(true);
+    }
+
+    public void setEditor(FilmEditor editor)
+    {
+        this.editorManager = editor;
     }
 
     public void removePoster(ActionEvent actionEvent)
@@ -95,13 +103,13 @@ public class FilmEditorController
         if (!titleLabel.getText().equals(""))
         {
             loadApi();
-            List<String> values = api.parser.parse("poster");
-            if (values.size() < 1)
+            String value = api.parser.parse("Poster");
+            if (value==null)
             {
                 Main.dialogManager("This film is not present in our database");
                 return;
             }
-            posterImageView.setImage(new Image(values.get(0)));
+            posterImageView.setImage(new Image(value));
         }
     }
 
@@ -130,22 +138,26 @@ public class FilmEditorController
     public void chooseActors(ActionEvent actionEvent)
     {
         ActorChooser actorChooser = new ActorChooser(movie);
-        actorChooser.show(Main.controller.mainPane);
+        actorChooser.show(Main.controller.mainUI);
     }
 
     public void deleteMovie(ActionEvent actionEvent)
     {
-
+        MovieStorageService.remove(movie);
     }
 
     public void saveAndClose(ActionEvent actionEvent)
     {
-
+        MovieStorageService.addMovie(movie);
+        this.closeDialog(null);
     }
 
     public void saveAndNext(ActionEvent actionEvent)
     {
-
+        movie.setTitle(titleLabel.getText());
+        movie.setYear(yearLabel.getText());
+        movie.setRuntime(runtimeLabel.getText());
+        movie.setDirector(directorLabel.getText());
     }
 
     public void closeDialog(ActionEvent actionEvent)
@@ -158,34 +170,34 @@ public class FilmEditorController
         if (!titleLabel.getText().equals(""))
         {
             loadApi();
-            List<String> year = api.parser.parse("year");
-            List<String> runtime = api.parser.parse("runtime");
-            List<String> writer = api.parser.parse("writer");
-            List<String> plot = api.parser.parse("plot");
-            List<String> imdbid = api.parser.parse("imdbID");
-            List<String> title = api.parser.parse("title");
-            List<String> genre = api.parser.parse("genre");
-            List<String> actors = api.parser.parse("actors");
+            String year = api.parser.parse("Year");
+            String runtime = api.parser.parse("Runtime");
+            String director = api.parser.parse("Director");
+            String plot = api.parser.parse("Plot");
+            String imdbid = api.parser.parse("imdbID");
+            String title = api.parser.parse("Title");
+            String genre = api.parser.parse("Genre");
+            String actors = api.parser.parse("Actors");
 
-            if (title.size() < 1)
+            if (title==null)
             {
                 Main.dialogManager("This film is not present in our database");
                 return;
             }
-            for (String actor : actors.get(0).split(","))
+            for (String actor : actors.split(","))
                 if (!movie.getActors().contains(actor))
                 {
                     movie.getActors().add(actor);
                     GeneralStorage.actors.add(actor);
                 }
-            yearLabel.setText((year.size()>0)?year.get(0):"null");
-            runtimeLabel.setText((runtime.size()>0)?runtime.get(0):"null");
-            writerLabel.setText((writer.size()>0)?writer.get(0):"null");
-            plotArea.setText((plot.size()>0)?plot.get(0):"null");
-            titleLabel.setText((title.size()>0)?title.get(0):"null");
+            yearLabel.setText((year!=null)?year:"null");
+            runtimeLabel.setText((runtime!=null)?runtime:"null");
+            directorLabel.setText((director!=null)?director:"null");
+            plotArea.setText((plot!=null)?plot:"null");
+            titleLabel.setText((title!=null)?title:"null");
             System.out.println(genre);
-            if (genre.size() != 0)
-                for (String g:genre.get(0).split(","))
+            if (genre!=null)
+                for (String g:genre.split(","))
                     genreCheckBox.getItems().stream().filter(o -> ((String) o).replaceAll("_", "-").equalsIgnoreCase(g.replaceAll("\\s+", ""))).forEach(o -> genreCheckBox.getCheckModel().check(o));
         }
     }

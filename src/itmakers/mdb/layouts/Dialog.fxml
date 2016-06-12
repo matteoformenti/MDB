@@ -77,7 +77,7 @@
                                  <VBox.margin>
                                     <Insets right="8.0" />
                                  </VBox.margin>
-                                    <JFXTextField fx:id="writerLabel" focusColor="#2196f3" promptText="Writer" unFocusColor="#2298f280" HBox.hgrow="ALWAYS" />
+                                    <JFXTextField fx:id="directorLabel" focusColor="#2196f3" promptText="Director" unFocusColor="#2298f280" HBox.hgrow="ALWAYS" />
                                     <JFXButton onAction="#chooseActors" ripplerFill="#2196f3" text="Actors" textAlignment="CENTER">
                                        <graphic>
                                           <MaterialDesignIconView glyphName="PLUS" />

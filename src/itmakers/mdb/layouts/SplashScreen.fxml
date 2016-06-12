@@ -10,7 +10,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="335.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
       <ImageView fitHeight="340.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
-            <Image url="@../img/back.jpg" />
+            <Image url="@../../itmakers/mdb/img/back.jpg" />
       </ImageView>
       <JFXProgressBar fx:id="progBar" layoutX="200.0" layoutY="255.0" nodeOrientation="RIGHT_TO_LEFT" prefWidth="400.0" progress="0.0" />
       <Label layoutX="200.0" layoutY="210.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="16.0" prefWidth="400.0" text="ITMakers MDB" textAlignment="RIGHT" textFill="WHITE">
