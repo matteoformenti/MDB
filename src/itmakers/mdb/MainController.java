@@ -202,7 +202,7 @@ public class MainController
 
     public void removeFromMoviesList(Movie movie)
     {
-        moviesTilePane.getChildren().remove(movie);
+        moviesTilePane.getChildren().remove(movie.getGraphics());
     }
 
     public ObservableList getMovieGraphics()
