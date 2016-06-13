@@ -44,27 +44,18 @@ public class FilmEditorController
     private String imdbID;
 
     private Movie movie;
-    private JFXDialog dialog;
     private FilmEditor editorManager;
 
-    private void loadApi()
-    {
-        if (api != null)
-            if (api.title.equals(titleLabel.getText()))
-                return;
-        api = new OMDBApi(titleLabel.getText(), JSONParser.Type.movie);
-    }
-
-    void init(JFXDialog d, Movie m)
+    void init(FilmEditor ed, Movie m)
     {
         saveAndNextButton.setDisable(true);
         this.movie = m;
         if (movie == null)
         {
-            movie = new Movie();
+            movie = MovieStorageService.prepareNewMovie();
             deleteButton.setDisable(true);
         }
-        this.dialog = d;
+        this.editorManager = ed;
         posterPane.setOnMouseEntered((e) ->
         {
             posterOptions.toFront();
@@ -75,16 +66,19 @@ public class FilmEditorController
             genreCheckBox.getItems().add(g.toString());
         plotArea.setWrapText(true);
         genreCheckBox.getCheckModel().getCheckedItems().addListener((ListChangeListener) (e) ->
-        {
-            movie.getGenres().removeAll(movie.getGenres());
-            genreCheckBox.getCheckModel().getCheckedItems().stream().forEach((c) -> movie.getGenres().add(Genres.valueOf((String) c)));
-        }
+                {
+                    movie.getGenres().removeAll(movie.getGenres());
+                    genreCheckBox.getCheckModel().getCheckedItems().stream().forEach((c) -> movie.getGenres().add(Genres.valueOf((String) c)));
+                }
         );
     }
 
-    void setEditor(FilmEditor editor)
+    private void loadApi()
     {
-        this.editorManager = editor;
+        if (api != null)
+            if (api.title.equals(titleLabel.getText()))
+                return;
+        api = new OMDBApi(titleLabel.getText(), JSONParser.Type.movie);
     }
 
     public void removePoster(ActionEvent actionEvent)
@@ -151,31 +145,33 @@ public class FilmEditorController
     public void deleteMovie(ActionEvent actionEvent)
     {
         MovieStorageService.remove(movie);
+        editorManager.close();
     }
 
     public void saveAndClose(ActionEvent actionEvent)
     {
         if (titleLabel.getText().equals("") || titleLabel.getText().equals(" "))
         {
-            Main.dialogManager("Title not valid: unable to create a new movie");
+            Main.dialogManager("Title not valid: unable to create movie");
             return;
         }
-        MovieStorageService.addMovie(new Movie());
-        Movie tmp = MovieStorageService.getLastMovie();
-        tmp.setTitle(titleLabel.getText());
-        tmp.setYear(yearLabel.getText());
-        tmp.setRuntime(runtimeLabel.getText());
-        tmp.setDirector(directorLabel.getText());
-        tmp.setPlot(plotArea.getText());
-        tmp.setPosterImage(posterImageView.getImage());
-        tmp.setImdbID(imdbID);
-        tmp.setLocalURL(fileLocationLabel.getText());
-        tmp.setLocalURLTrailer(trailerField.getText());
-        tmp.setLocalRating((int) ratingSlider.getValue());
-        generateGraphic();
-        MovieStorageService.updateList(tmp);
+        movie.setTitle(titleLabel.getText());
+        movie.setYear(yearLabel.getText());
+        movie.setRuntime(runtimeLabel.getText());
+        movie.setDirector(directorLabel.getText());
+        movie.setPlot(plotArea.getText());
+        movie.setPosterImage(posterImageView.getImage());
+        movie.setImdbID(imdbID);
+        movie.setLocalURL(fileLocationLabel.getText());
+        movie.setLocalURLTrailer(trailerField.getText());
+        movie.setLocalRating((int) ratingSlider.getValue());
+        if (movie.getGraphics() == null)
+            generateGraphic(movie);
+        else
+            movie.getGraphics().reloadGraphics();
+        MovieStorageService.updateList(movie);
         resetFields();
-        movie = new Movie();
+        movie = MovieStorageService.prepareNewMovie();
         this.closeDialog(null);
     }
 
@@ -183,28 +179,26 @@ public class FilmEditorController
     {
         if (titleLabel.getText().equals("") || titleLabel.getText().equals(" "))
         {
-            Main.dialogManager("Title not valid: unable to create a new movie");
+            Main.dialogManager("Title not valid: unable to create movie");
             return;
         }
-        MovieStorageService.addMovie(new Movie());
-        Movie tmp = MovieStorageService.getLastMovie();
-        tmp.setTitle(titleLabel.getText());
-        tmp.setYear(yearLabel.getText());
-        tmp.setRuntime(runtimeLabel.getText());
-        tmp.setDirector(directorLabel.getText());
-        tmp.setPlot(plotArea.getText());
-        tmp.setPosterImage(posterImageView.getImage());
-        tmp.setImdbID(imdbID);
-        tmp.setLocalURL(fileLocationLabel.getText());
-        tmp.setLocalURLTrailer(trailerField.getText());
-        tmp.setLocalRating((int) ratingSlider.getValue());
-        generateGraphic();
-        MovieStorageService.updateList(tmp);
+        movie.setTitle(titleLabel.getText());
+        movie.setYear(yearLabel.getText());
+        movie.setRuntime(runtimeLabel.getText());
+        movie.setDirector(directorLabel.getText());
+        movie.setPlot(plotArea.getText());
+        movie.setPosterImage(posterImageView.getImage());
+        movie.setImdbID(imdbID);
+        movie.setLocalURL(fileLocationLabel.getText());
+        movie.setLocalURLTrailer(trailerField.getText());
+        movie.setLocalRating((int) ratingSlider.getValue());
+        generateGraphic(movie);
+        MovieStorageService.updateList(movie);
         resetFields();
         fileLocationLabel.setText(editorManager.getNextMovie().toString());
         if (editorManager.getFilesSize() == 1)
             saveAndNextButton.setDisable(true);
-        movie = new Movie();
+        movie = MovieStorageService.prepareNewMovie();
         filmCounter.setText(editorManager.getFilesSize()-1+" more movies in the selected folder");
     }
 
@@ -224,11 +218,8 @@ public class FilmEditorController
 
     public void closeDialog(ActionEvent actionEvent)
     {
-        for (Genres s:movie.getGenres())
-        {
-            System.out.println(s);
-        }
-        dialog.close();
+        MovieStorageService.remove(movie);
+        editorManager.close();
     }
 
     public void downloadInfo(ActionEvent actionEvent)
@@ -268,9 +259,9 @@ public class FilmEditorController
         }
     }
 
-    private void generateGraphic()
+    private void generateGraphic(Movie m)
     {
-        MovieStorageService.getLastMovie().setGraphics(new MovieGraphics(MovieStorageService.getLastMovie()));
+        m.setGraphics(new MovieGraphics(m));
     }
 
     void loadMovieData(Movie movie)

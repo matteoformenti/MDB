@@ -21,9 +21,9 @@ public class FilmEditor extends JFXDialog
 
     public FilmEditor(Movie m, String folder)
     {
+        this.movie = m;
         loadUI();
         this.setTransitionType(DialogTransition.CENTER);
-        this.movie = m;
         if (folder!=null)
         {
             walkDirectory(folder);
@@ -49,6 +49,7 @@ public class FilmEditor extends JFXDialog
         if (m != null)
         {
             c.loadMovieData(movie);
+            c.deleteButton.setDisable(false);
         }
     }
 
@@ -63,7 +64,7 @@ public class FilmEditor extends JFXDialog
             List<Path> toBeRemoved = new ArrayList<>();
             for (Path p : files)
             {
-                toBeRemoved.addAll(MovieStorageService.getMovies().stream().filter(m -> m.getLocalURL().equals(p.toString())).map(m -> p).collect(Collectors.toList()));
+                toBeRemoved.addAll(MovieStorageService.getMovies().stream().filter(m -> m.getLocalURL() != null).filter(m -> m.getLocalURL().equals(p.toString())).map(m -> p).collect(Collectors.toList()));
                 if (Files.probeContentType(p) != null)
                     if (!Files.probeContentType(p).contains("video"))
                         toBeRemoved.add(p);
@@ -72,7 +73,7 @@ public class FilmEditor extends JFXDialog
         }
         catch (Exception ex)
         {
-            Main.dialogManager(ex.getLocalizedMessage());
+            Main.dialogManager(ex.getMessage());
         }
     }
 
@@ -89,7 +90,6 @@ public class FilmEditor extends JFXDialog
             layout.setBody(content);
             layout.setPadding(new Insets(-1));
             this.setContent(layout);
-            c.setEditor(this);
         } catch (Exception e)
         {
             e.printStackTrace();

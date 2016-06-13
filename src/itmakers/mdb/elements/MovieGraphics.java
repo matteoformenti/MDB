@@ -40,7 +40,6 @@ public class MovieGraphics extends StackPane
         imageView.setImage(movie.getPosterImage());
         imageView.setFitWidth(260);
         imageView.setFitHeight(380);
-        this.setOnMouseClicked((e) -> System.out.println("click"+m.getTitle()));
     }
 
     private void initVBox()
@@ -84,5 +83,10 @@ public class MovieGraphics extends StackPane
     {
         imageView.setFitHeight(tileHeight);
         imageView.setFitWidth(tileWidth);
+    }
+
+    public void reloadGraphics()
+    {
+
     }
 }

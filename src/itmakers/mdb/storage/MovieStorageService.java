@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MovieStorageService implements Serializable
 {
-    private static List<Movie> movies = new ArrayList<>();
+    public static List<Movie> movies = new ArrayList<>();
 
     public static List<Movie> getMovies()
     {
@@ -18,11 +18,12 @@ public class MovieStorageService implements Serializable
 
     public static void addMovie(Movie m)
     {
-        movies.add(m);
-        saveDB();
+        if (!movies.contains(m))
+            movies.add(m);
+        updateDB();
     }
 
-    private static void saveDB()
+    public static void updateDB()
     {
 
     }
@@ -38,11 +39,19 @@ public class MovieStorageService implements Serializable
     {
         movies.remove(movie);
         Main.controller.removeFromMoviesList(movie);
-        saveDB();
+        updateDB();
     }
 
     public static void updateList(Movie movie)
     {
-        Main.controller.addToMoviesList(movie);
+        if (!Main.controller.getMovieGraphics().contains(movie.getGraphics()))
+            Main.controller.addToMoviesList(movie);
+    }
+
+    public static Movie prepareNewMovie()
+    {
+        Movie m = new Movie();
+        addMovie(m);
+        return m;
     }
 }

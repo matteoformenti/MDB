@@ -4,6 +4,7 @@ import com.jfoenix.controls.*;
 import itmakers.mdb.elements.FilmEditor;
 import itmakers.mdb.elements.MovieGraphics;
 import itmakers.mdb.storage.Settings;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -202,5 +203,10 @@ public class MainController
     public void removeFromMoviesList(Movie movie)
     {
         moviesTilePane.getChildren().remove(movie);
+    }
+
+    public ObservableList getMovieGraphics()
+    {
+        return moviesTilePane.getChildren();
     }
 }
