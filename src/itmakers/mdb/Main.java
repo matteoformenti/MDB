@@ -2,6 +2,7 @@ package itmakers.mdb;
 
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import itmakers.mdb.storage.MovieStorageService;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +37,7 @@ public class Main extends Application
         mainStage.show();
         controller.init();
         mainStage.setTitle("ITMakers MDB");
+        MovieStorageService.loadDB();
     }
 
     public static JFXDialog dialogManager(String message)

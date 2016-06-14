@@ -174,4 +174,9 @@ public class Movie implements Serializable
     {
         this.actors = actors;
     }
+
+    public void generateMovieGraphics()
+    {
+        setGraphics(new MovieGraphics(this));
+    }
 }

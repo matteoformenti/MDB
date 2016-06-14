@@ -23,7 +23,7 @@ public class MovieGraphics extends StackPane
     private VBox vBox = new VBox();
     private ImageView imageView = new ImageView();
 
-    MovieGraphics(Movie m)
+    public MovieGraphics(Movie m)
     {
         movie = m;
         initVBox();
@@ -85,7 +85,7 @@ public class MovieGraphics extends StackPane
         imageView.setFitWidth(tileWidth);
     }
 
-    public void reloadGraphics()
+    void reloadGraphics()
     {
 
     }
