@@ -43,7 +43,9 @@ public class Main extends Application
         JFXDialog dialog = new JFXDialog();
         JFXDialogLayout layout = new JFXDialogLayout();
         dialog.setContent(layout);
-        layout.setBody(new Label(message));
+        Label l = new Label(message);
+        l.setWrapText(true);
+        layout.setBody(l);
         dialog.setTransitionType(JFXDialog.DialogTransition.CENTER);
         Platform.runLater(() -> dialog.show(controller.mainPane));
         return dialog;

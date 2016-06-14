@@ -21,8 +21,19 @@ public class Movie implements Serializable
     private String localURLTrailer;
     private String localURL;
     private int localRating;
-    private Image posterImage;
-    private MovieGraphics graphics;
+    private transient Image posterImage;
+    private transient MovieGraphics graphics;
+    private String imageIdentifier;
+
+    public String getImageIdentifier()
+    {
+        return imageIdentifier;
+    }
+
+    public void setImageIdentifier(String imageIdentifier)
+    {
+        this.imageIdentifier = imageIdentifier;
+    }
 
     public String getLocalURLTrailer()
     {
