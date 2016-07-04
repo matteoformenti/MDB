@@ -40,6 +40,78 @@ public class MovieStorageService implements Serializable
         updateDB();
     }
 
+    public static void saveDB()
+    {
+        Task saveMoviesTask = new Task()
+        {
+            @Override
+            protected Object call() throws Exception
+            {
+                getMovies().stream().filter(m -> m.getLocalURL() != null && m.getTitle() != null).forEach(m -> {
+                    try
+                    {
+                        if (Files.notExists(Paths.get(Settings.moviesPostersFolder)))
+                            Files.createDirectories(Paths.get(Settings.moviesPostersFolder));
+                        if (MD5Enabled)
+                        {
+                            MessageDigest digest = MessageDigest.getInstance("MD5");
+                            digest.reset();
+                            digest.update((m.getTitle() + m.getLocalURL()).getBytes());
+                            String filename = new BigInteger(1, digest.digest()).toString(16);
+                            try
+                            {
+                                ImageIO.write(SwingFXUtils.fromFXImage(m.getPosterImage(), null), "png", new File(Settings.moviesPostersFolder + "/" + filename + ".png"));
+                                m.setImageIdentifier(filename);
+                            } catch (Exception s)
+                            {
+                                s.printStackTrace();
+                            }
+                        } else
+                        {
+                            ImageIO.write(SwingFXUtils.fromFXImage(m.getPosterImage(), null), "png", new File(Settings.moviesPostersFolder + "/" + m.getTitle() + ".png"));
+                        }
+                    } catch (NoSuchAlgorithmException e)
+                    {
+                        MD5Enabled = false;
+                        Main.dialogManager("MD5 isn't supported by your computer, we're going back to a less secure fallback method (this is used to ensure that every movie poster has an unique id, having more movies with the same title can cause problems)");
+                    } catch (IOException e)
+                    {
+                        Main.dialogManager(e.getMessage());
+                    }
+                });
+                boolean success = false;
+                do
+                {
+                    try
+                    {
+                        Files.deleteIfExists(Paths.get(Settings.moviesDbLocation + "-n"));
+                        FileOutputStream outputStream = new FileOutputStream(Settings.moviesDbLocation + "-n");
+                        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+                        objectOutputStream.writeObject(movies);
+                        objectOutputStream.close();
+                        outputStream.close();
+                        Files.deleteIfExists(Paths.get(Settings.moviesDbLocation));
+                        Path fileToMovePath = Paths.get(Settings.moviesDbLocation + "-n");
+                        Path targetPath = Paths.get(Settings.moviesDbLocation);
+                        Files.move(fileToMovePath, targetPath);
+                        success = true;
+                    } catch (FileNotFoundException e)
+                    {
+                        e.printStackTrace();
+                    } catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+                while (!success);
+                return null;
+            }
+        };
+        Thread t = new Thread(saveMoviesTask);
+        t.setName("exit saver");
+        t.start();
+    }
+
     private static void updateDB()
     {
         Task saveMoviesTask = new Task()
@@ -81,6 +153,7 @@ public class MovieStorageService implements Serializable
                 });
                 try
                 {
+                    Files.deleteIfExists(Paths.get(Settings.moviesDbLocation+"-n"));
                     FileOutputStream outputStream = new FileOutputStream(Settings.moviesDbLocation+"-n");
                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
                     objectOutputStream.writeObject(movies);
@@ -93,16 +166,12 @@ public class MovieStorageService implements Serializable
 
 
                 } catch (FileNotFoundException e)
-                {
-                    e.printStackTrace();
-                } catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
+                {} catch (IOException e){}
                 return null;
             }
         };
         Thread t = new Thread(saveMoviesTask);
+        t.setName("db saver");
         t.start();
     }
 

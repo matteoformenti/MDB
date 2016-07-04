@@ -22,8 +22,6 @@ import java.io.File;
 
 public class MainController
 {
-
-
     public StackPane mainPane;
     public StackPane mainUI;
     public JFXTabPane tabPane;

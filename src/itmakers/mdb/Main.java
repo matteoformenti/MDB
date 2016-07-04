@@ -38,6 +38,7 @@ public class Main extends Application
         controller.init();
         mainStage.setTitle("ITMakers MDB");
         MovieStorageService.loadDB();
+        mainStage.setOnCloseRequest(e -> MovieStorageService.saveDB());
     }
 
     public static JFXDialog dialogManager(String message)
