@@ -21,6 +21,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class MovieStorageService implements Serializable
 {
@@ -220,6 +221,7 @@ public class MovieStorageService implements Serializable
                         m.setPosterImage(SwingFXUtils.toFXImage(ImageIO.read(poster), null));
                         m.generateMovieGraphics();
                         Platform.runLater(() -> Main.controller.addToMoviesList(m));
+                        m.getActors().stream().filter(a->!Settings.actors.contains(a)).forEach(a -> Settings.actors.add(a));
                     }
                     in.close();
                     obin.close();

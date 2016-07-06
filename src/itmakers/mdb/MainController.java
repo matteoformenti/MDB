@@ -4,6 +4,9 @@ import com.jfoenix.controls.*;
 import itmakers.mdb.elements.FilmEditor;
 import itmakers.mdb.elements.MovieGraphics;
 import itmakers.mdb.storage.Settings;
+import javafx.beans.InvalidationListener;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -17,8 +20,10 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import org.controlsfx.control.CheckComboBox;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class MainController
 {
@@ -206,5 +211,78 @@ public class MainController
     public ObservableList getMovieGraphics()
     {
         return moviesTilePane.getChildren();
+    }
+
+    public void searchMovie(ActionEvent actionEvent)
+    {
+    }
+
+    public void showMovieFilter(ActionEvent actionEvent)
+    {
+        popup.close();
+        JFXDialog filterDialog = new JFXDialog();
+        JFXDialogLayout layout = new JFXDialogLayout();
+        filterDialog.setContent(layout);
+
+        VBox vbox = new VBox();
+        layout.setBody(vbox);
+        Label title = new Label("Filter movies");
+        vbox.getChildren().add(title);
+
+        ToggleGroup group = new ToggleGroup();
+        JFXRadioButton byGenreRB = new JFXRadioButton("Filter by genre");
+        JFXRadioButton byLengthRB = new JFXRadioButton("Filter by length");
+        JFXRadioButton byRatingRB = new JFXRadioButton("Filter by rating");
+        JFXRadioButton byYearRB= new JFXRadioButton("Filter by year");
+        FlowPane RBPane = new FlowPane();
+        RBPane.setHgap(20);
+        RBPane.setVgap(20);
+        RBPane.getChildren().addAll(byGenreRB, byLengthRB, byRatingRB, byYearRB);
+        group.getToggles().addAll(byGenreRB, byLengthRB, byRatingRB, byYearRB);
+        vbox.getChildren().add(RBPane);
+        filterDialog.setPrefWidth(mainPane.getWidth()/2);
+        mainPane.widthProperty().addListener((e) -> layout.setPrefWidth(mainPane.getWidth()/2));
+        RBPane.setPadding(new Insets(10));
+        AnchorPane filterPane = new AnchorPane();
+        vbox.getChildren().add(filterPane);
+
+        AnchorPane byGenrePane = new AnchorPane();
+        byGenrePane.getChildren().add(new JFXButton("asoifhopiahf"));
+        FlowPane checksPane = new FlowPane();
+        Arrays.stream(Genres.values()).forEach(g -> checksPane.getChildren().add(new JFXCheckBox(g.toString())));
+
+        group.selectedToggleProperty().addListener(e ->
+        {
+            System.out.println(((JFXRadioButton)group.getSelectedToggle()).getText());
+            switch (((JFXRadioButton)group.getSelectedToggle()).getText())
+            {
+                case "Filter by genre":
+                    System.out.println("Ciao");
+                    filterPane.getChildren().removeAll(filterPane.getChildren());
+                    filterPane.getChildren().add(byGenrePane);
+                    break;
+                case "Filter by length":
+                    filterPane.getChildren().removeAll(filterPane.getChildren());
+                    break;
+                case "Filter by rating":
+                    filterPane.getChildren().removeAll(filterPane.getChildren());
+                    break;
+                case "Filter by year":
+                    filterPane.getChildren().removeAll(filterPane.getChildren());
+                    break;
+            }
+        }
+        );
+
+        JFXButton filterButton = new JFXButton("Filter");
+        JFXButton resetButton = new JFXButton("Reset");
+        FlowPane actionsPane = new FlowPane();
+        AnchorPane a1 = new AnchorPane();
+        a1.getChildren().add(actionsPane);
+        AnchorPane.setRightAnchor(actionsPane, 5.0);
+        actionsPane.getChildren().addAll(resetButton, filterButton);
+        layout.setActions(a1);
+        filterDialog.setTransitionType(JFXDialog.DialogTransition.CENTER);
+        filterDialog.show(mainUI);
     }
 }

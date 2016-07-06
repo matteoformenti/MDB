@@ -8,8 +8,10 @@ import itmakers.mdb.services.JSONParser;
 import itmakers.mdb.services.OMDBApi;
 import itmakers.mdb.storage.Settings;
 import itmakers.mdb.storage.MovieStorageService;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,6 +21,7 @@ import javafx.stage.FileChooser;
 import org.controlsfx.control.CheckComboBox;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.List;
 
 
 public class FilmEditorController
@@ -45,6 +48,8 @@ public class FilmEditorController
 
     private Movie movie;
     private FilmEditor editorManager;
+    private boolean useListener = true;
+    private boolean isEditingMovie = true;
 
     void init(FilmEditor ed, Movie m)
     {
@@ -52,6 +57,7 @@ public class FilmEditorController
         this.movie = m;
         if (movie == null)
         {
+            isEditingMovie = false;
             movie = MovieStorageService.prepareNewMovie();
             deleteButton.setDisable(true);
         }
@@ -67,8 +73,11 @@ public class FilmEditorController
         plotArea.setWrapText(true);
         genreCheckBox.getCheckModel().getCheckedItems().addListener((ListChangeListener) (e) ->
                 {
-                    movie.getGenres().removeAll(movie.getGenres());
-                    genreCheckBox.getCheckModel().getCheckedItems().stream().forEach((c) -> movie.getGenres().add(Genres.valueOf((String) c)));
+                    if (useListener)
+                    {
+                        movie.getGenres().removeAll(movie.getGenres());
+                        genreCheckBox.getCheckModel().getCheckedItems().stream().forEach((c) -> movie.getGenres().add(Genres.valueOf((String) c)));
+                    }
                 }
         );
     }
@@ -155,6 +164,16 @@ public class FilmEditorController
             Main.dialogManager("Title not valid: unable to create movie");
             return;
         }
+        if (!isEditingMovie)
+            MovieStorageService.getMovies().stream().forEach(m ->
+            {
+                if (m.getTitle()!= null)
+                if (m.getTitle().equalsIgnoreCase(titleLabel.getText()))
+                {
+                    Main.dialogManager("This movie is already present in our database");
+                    return;
+                }
+            });
         movie.setTitle(titleLabel.getText());
         movie.setYear(yearLabel.getText());
         movie.setRuntime(runtimeLabel.getText());
@@ -182,6 +201,14 @@ public class FilmEditorController
             Main.dialogManager("Title not valid: unable to create movie");
             return;
         }
+        MovieStorageService.getMovies().stream().forEach(m ->
+        {
+            if (m.getTitle().equalsIgnoreCase(titleLabel.getText()) || m.getLocalURL().equalsIgnoreCase(fileLocationLabel.getText()))
+            {
+                Main.dialogManager("Thiis movie is already present in our database");
+                return;
+            }
+        });
         movie.setTitle(titleLabel.getText());
         movie.setYear(yearLabel.getText());
         movie.setRuntime(runtimeLabel.getText());
@@ -275,5 +302,20 @@ public class FilmEditorController
         fileLocationLabel.setText(movie.getLocalURL());
         trailerField.setText(movie.getLocalURLTrailer());
         ratingSlider.setValue(movie.getLocalRating());
+        useListener = false;
+        for (Genres g : movie.getGenres())
+        {
+            int i = 0;
+            for (Object o : genreCheckBox.getItems())
+            {
+                if (o.equals(g.toString()))
+                {
+                    genreCheckBox.getCheckModel().check(i);
+                    break;
+                }
+                i++;
+            }
+        }
+        useListener=true;
     }
 }

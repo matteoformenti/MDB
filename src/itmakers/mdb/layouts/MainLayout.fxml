@@ -73,9 +73,16 @@
                     </JFXButton>
                 </AnchorPane>
                 <AnchorPane>
-                    <JFXButton onAction="#showInfo" text="Info" ripplerFill="#2196F3" style="-fx-background-color: white" buttonType="FLAT" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0">
+                    <JFXButton onAction="#showMovieFilter" text="Filter Movies" ripplerFill="#2196F3" style="-fx-background-color: white" buttonType="FLAT" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0">
                         <graphic>
-                            <MaterialDesignIconView fill="#414141" glyphName="INFORMATION_OUTLINE" size="18" />
+                            <MaterialDesignIconView fill="#414141" glyphName="FILTER" size="18" />
+                        </graphic>
+                    </JFXButton>
+                </AnchorPane>
+                <AnchorPane>
+                    <JFXButton onAction="#searchMovie" text="Search Movie" ripplerFill="#2196F3" style="-fx-background-color: white" buttonType="FLAT" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0">
+                        <graphic>
+                            <MaterialDesignIconView fill="#414141" glyphName="ACCOUNT_SEARCH" size="18" />
                         </graphic>
                     </JFXButton>
                 </AnchorPane>
