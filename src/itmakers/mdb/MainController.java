@@ -3,8 +3,9 @@ package itmakers.mdb;
 import com.jfoenix.controls.*;
 import itmakers.mdb.elements.FilmEditor;
 import itmakers.mdb.elements.MovieGraphics;
+import itmakers.mdb.storage.MovieStorageService;
 import itmakers.mdb.storage.Settings;
-import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -12,18 +13,18 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import org.controlsfx.control.CheckComboBox;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import static itmakers.mdb.services.JSONParser.Type.movie;
 
 public class MainController
 {
@@ -219,6 +220,8 @@ public class MainController
 
     public void showMovieFilter(ActionEvent actionEvent)
     {
+        List<Movie> movies = new ArrayList();
+        Main.controller.getMovieGraphics().stream().forEach(g -> movies.add(((MovieGraphics)g).getMovie()));
         popup.close();
         JFXDialog filterDialog = new JFXDialog();
         JFXDialogLayout layout = new JFXDialogLayout();
@@ -231,6 +234,7 @@ public class MainController
 
         ToggleGroup group = new ToggleGroup();
         JFXRadioButton byGenreRB = new JFXRadioButton("Filter by genre");
+        byGenreRB.setSelected(true);
         JFXRadioButton byLengthRB = new JFXRadioButton("Filter by length");
         JFXRadioButton byRatingRB = new JFXRadioButton("Filter by rating");
         JFXRadioButton byYearRB= new JFXRadioButton("Filter by year");
@@ -243,21 +247,54 @@ public class MainController
         filterDialog.setPrefWidth(mainPane.getWidth()/2);
         mainPane.widthProperty().addListener((e) -> layout.setPrefWidth(mainPane.getWidth()/2));
         RBPane.setPadding(new Insets(10));
-        AnchorPane filterPane = new AnchorPane();
-        vbox.getChildren().add(filterPane);
+        HBox filterPane = new HBox();
+        vbox.getChildren().addAll(new Separator(), filterPane, new Separator());
 
-        AnchorPane byGenrePane = new AnchorPane();
-        byGenrePane.getChildren().add(new JFXButton("asoifhopiahf"));
-        FlowPane checksPane = new FlowPane();
-        Arrays.stream(Genres.values()).forEach(g -> checksPane.getChildren().add(new JFXCheckBox(g.toString())));
+        VBox byGenrePane = new VBox();
+        byGenrePane.setPadding(new Insets(10,0,10,0));
+        CheckComboBox genreBox = new CheckComboBox();
+        HBox a = new HBox();
+        a.getChildren().add(genreBox);
+        filterPane.widthProperty().addListener(c -> genreBox.setPrefWidth(filterPane.getWidth()));
+        Arrays.stream(Genres.values()).forEach(g -> genreBox.getItems().add(g.toString()));
+        Label resultsLabel = new Label("Results: "+ MovieStorageService.getMovies().size());
+        byGenrePane.getChildren().addAll(a, resultsLabel);
+        filterPane.getChildren().add(byGenrePane);
+        genreBox.getCheckModel().getCheckedItems().addListener((ListChangeListener) (e) ->
+        {
+            movies.removeAll(movies);
+            if (genreBox.getCheckModel().getCheckedItems().size() == 0)
+                MovieStorageService.getMovies().stream().forEach(m -> movies.add(m));
+            else
+            {
+                Main.controller.getMovieGraphics().stream().forEach(g ->
+                {
+                    Movie movie = ((MovieGraphics)g).getMovie();
+                    boolean f = false;
+                    for (Object o : genreBox.getCheckModel().getCheckedItems())
+                    {
+                        for (Genres gen : movie.getGenres())
+                        {
+                            f = false;
+                            if (gen.toString().equalsIgnoreCase(o.toString()))
+                            {
+                                f = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (f)
+                        movies.add(movie);
+                });
+            }
+            resultsLabel.setText("Results: "+movies.size());
+        });
 
         group.selectedToggleProperty().addListener(e ->
         {
-            System.out.println(((JFXRadioButton)group.getSelectedToggle()).getText());
             switch (((JFXRadioButton)group.getSelectedToggle()).getText())
             {
                 case "Filter by genre":
-                    System.out.println("Ciao");
                     filterPane.getChildren().removeAll(filterPane.getChildren());
                     filterPane.getChildren().add(byGenrePane);
                     break;
@@ -275,7 +312,19 @@ public class MainController
         );
 
         JFXButton filterButton = new JFXButton("Filter");
+        filterButton.setOnAction(event ->
+        {
+            Main.controller.getMovieGraphics().removeAll(Main.controller.getMovieGraphics());
+            movies.stream().forEach(m -> Main.controller.addToMoviesList(m));
+            filterDialog.close();
+        });
         JFXButton resetButton = new JFXButton("Reset");
+        resetButton.setOnAction(event ->
+        {
+            Main.controller.getMovieGraphics().removeAll(Main.controller.getMovieGraphics());
+            MovieStorageService.getMovies().stream().forEach(m -> Main.controller.addToMoviesList(m));
+            filterDialog.close();
+        });
         FlowPane actionsPane = new FlowPane();
         AnchorPane a1 = new AnchorPane();
         a1.getChildren().add(actionsPane);

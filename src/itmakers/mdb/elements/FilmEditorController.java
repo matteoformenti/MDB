@@ -15,6 +15,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -153,8 +155,26 @@ public class FilmEditorController
 
     public void deleteMovie(ActionEvent actionEvent)
     {
-        MovieStorageService.remove(movie);
-        editorManager.close();
+        JFXDialog d = new JFXDialog();
+        JFXDialogLayout dl = new JFXDialogLayout();
+        HBox box = new HBox();
+        JFXButton b1 = new JFXButton("Yes, Delete");
+        b1.setOnAction(e ->
+        {
+            MovieStorageService.remove(movie);
+            d.close();
+            editorManager.close();
+        });
+        HBox.setHgrow(b1, Priority.ALWAYS);
+        JFXButton b2 = new JFXButton("No, Close");
+        HBox.setHgrow(b2, Priority.ALWAYS);
+        b2.setOnAction(e -> d.close());
+        box.getChildren().addAll(b1, b2);
+        dl.setActions(box);
+        dl.setBody(new Label("Are you sure you want to permanently delete \""+movie.getTitle()+"\"?"));
+        d.setContent(dl);
+        d.setTransitionType(JFXDialog.DialogTransition.CENTER);
+        d.show(Main.controller.mainPane);
     }
 
     public void saveAndClose(ActionEvent actionEvent)
